@@ -1,53 +1,53 @@
-// Простая система интервального повторения (spaced repetition).
-// Чистые функции: на вход — состояние карточки и результат, на выход — новое состояние.
+// A simple spaced-repetition system (SRS).
+// Pure functions: given a card state and a result, return a new state.
 
 export interface CardState {
   id: string;
-  /** Сколько раз подряд отвечено правильно. */
+  /** How many times in a row it has been answered correctly. */
   streak: number;
-  /** Считается ли вопрос "освоенным". */
+  /** Whether the question is considered "mastered". */
   mastered: boolean;
   /**
-   * Через сколько ВОПРОСОВ карточку снова показать (счётчик очереди).
-   * 0 — можно показывать сейчас.
+   * In how many QUESTIONS the card should be shown again (queue counter).
+   * 0 — it can be shown now.
    */
   dueIn: number;
 }
 
-/** Порог серии правильных ответов, после которого вопрос считается освоенным. */
+/** Streak threshold of correct answers after which a question is considered mastered. */
 export const MASTERY_STREAK = 3;
 
-/** Создаёт пустое состояние карточки. */
+/** Creates an empty card state. */
 export function newCard(id: string): CardState {
   return { id, streak: 0, mastered: false, dueIn: 0 };
 }
 
 /**
- * Обновляет карточку после ответа.
- * Правильный ответ увеличивает серию и отодвигает повтор всё дальше.
- * Неправильный — сбрасывает серию, снимает "освоенность" и возвращает карточку скоро.
+ * Updates a card after an answer.
+ * A correct answer grows the streak and pushes the repeat further out.
+ * A wrong one resets the streak, clears "mastered" and brings the card back soon.
  */
 export function reviewCard(card: CardState, correct: boolean): CardState {
   if (correct) {
     const streak = card.streak + 1;
     const mastered = streak >= MASTERY_STREAK;
-    // Интервал растёт: 2, 4, 8, ... вопросов.
+    // The interval grows: 2, 4, 8, ... questions.
     const dueIn = Math.pow(2, Math.min(streak, 5));
     return { ...card, streak, mastered, dueIn };
   }
-  // Ошибка: карточка вернётся уже через 1 вопрос, серия и освоенность сброшены.
+  // Mistake: the card returns in just 1 question, streak and mastery reset.
   return { ...card, streak: 0, mastered: false, dueIn: 1 };
 }
 
-/** Уменьшает счётчики dueIn на 1 шаг (вызывается после каждого показанного вопроса). */
+/** Decreases dueIn counters by 1 step (called after each shown question). */
 export function tickQueue(cards: CardState[]): CardState[] {
   return cards.map((c) => ({ ...c, dueIn: Math.max(0, c.dueIn - 1) }));
 }
 
 /**
- * Выбирает следующий вопрос для показа из доступных id.
- * Приоритет: 1) просроченные ошибки (dueIn==0 и не освоено), 2) новые вопросы,
- * 3) освоенные, наиболее «созревшие». Возвращает id или null.
+ * Picks the next question to show from the available ids.
+ * Priority: 1) overdue mistakes (dueIn==0 and not mastered), 2) new questions,
+ * 3) mastered ones that are most "ripe". Returns an id or null.
  */
 export function pickNext(
   availableIds: string[],
@@ -56,11 +56,11 @@ export function pickNext(
 ): string | null {
   const pool = availableIds.filter((id) => id !== excludeId);
   if (pool.length === 0) {
-    // Если остался только исключённый — всё равно вернём его.
+    // If only the excluded one is left — return it anyway.
     return availableIds[0] ?? null;
   }
 
-  // Просроченные карточки, которые уже отвечали (streak записан), но ещё не освоены.
+  // Overdue cards that have been answered already (streak recorded) but not yet mastered.
   const due = pool.filter((id) => {
     const c = cards[id];
     return c !== undefined && !c.mastered && c.dueIn <= 0;
@@ -70,7 +70,7 @@ export function pickNext(
   const fresh = pool.filter((id) => !cards[id]);
   if (fresh.length > 0) return fresh[0];
 
-  // Иначе — карточка с наименьшим dueIn (самая «созревшая»).
+  // Otherwise — the card with the smallest dueIn (the most "ripe").
   let best: string | null = null;
   let bestDue = Infinity;
   for (const id of pool) {
@@ -83,7 +83,20 @@ export function pickNext(
   return best;
 }
 
-/** Сколько вопросов освоено. */
+/** How many questions are mastered. */
 export function masteredCount(cards: Record<string, CardState>): number {
   return Object.values(cards).filter((c) => c.mastered).length;
+}
+
+/**
+ * Ids of questions that have been answered but are not yet mastered — i.e. the
+ * player has gotten them wrong (or not yet answered them correctly enough times).
+ * Restricted to `knownIds` so stale cards for removed questions are ignored.
+ * Used by the "review your mistakes" mode.
+ */
+export function mistakeIds(cards: Record<string, CardState>, knownIds: Iterable<string>): string[] {
+  const known = new Set(knownIds);
+  return Object.values(cards)
+    .filter((c) => !c.mastered && known.has(c.id))
+    .map((c) => c.id);
 }
