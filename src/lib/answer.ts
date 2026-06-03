@@ -1,21 +1,21 @@
-// Детерминированная проверка ответов и отбор вопросов. Чистые функции.
+// Deterministic answer checking and question selection. Pure functions.
 
 import type { Category, Question } from "../data/types";
 
-/** Проверяет, верен ли выбранный вариант. */
+/** Checks whether the selected option is correct. */
 export function isCorrect(question: Question, selectedIndex: number): boolean {
   return selectedIndex === question.correctIndex;
 }
 
-/** Фильтрует вопросы по выбранным категориям (пустой набор = все категории). */
+/** Filters questions by selected categories (empty set = all categories). */
 export function filterByCategories(questions: Question[], categories: Set<Category>): Question[] {
   if (categories.size === 0) return [...questions];
   return questions.filter((q) => categories.has(q.category));
 }
 
 /**
- * Детерминированный shuffle на основе seed (Mulberry32 + Fisher–Yates).
- * Позволяет тестировать порядок предсказуемо.
+ * Deterministic seeded shuffle (Mulberry32 + Fisher–Yates).
+ * Makes the ordering predictable for tests.
  */
 export function seededShuffle<T>(items: T[], seed: number): T[] {
   const arr = [...items];

@@ -1,118 +1,121 @@
-# 📜 Познаём закон
+# 📜 Know the Law
 
-Образовательная игра-викторина по основам российского права. Угадывай нужный
-кодекс, вспоминай «иконичные» статьи, отличай правовые мифы от настоящих норм —
-в формате с очками, комбо, уровнями и званиями (от *Новичка* до *Судьи
-Верховного суда*).
+An educational quiz game about the basics of the Russian legal system. Guess the
+right code, recall the "iconic" article numbers, and tell legal myths apart from
+real norms — all with points, combos, levels and ranks (from *Newcomer* to
+*Supreme Court Justice*).
 
-100% статичное клиентское приложение: без бэкенда, без платных API, без
-сетевых запросов во время игры. Бесплатно навсегда, хостится на GitHub Pages.
+A 100% static, client-side app: no backend, no paid APIs, no network requests
+during play. Free forever, hosted on GitHub Pages. The interface and all content
+are in English; the subject matter is the Russian legal system, and every
+question carries a legal citation so you can verify it yourself.
 
-> **EN:** "Know the Law" — a Russian-language, gamified quiz about the basics of
-> Russian law (which code governs a situation, famous article numbers, legal
-> myths vs. real norms). Vanilla TypeScript + Vite, fully static, zero-cost,
-> client-side only, deployable to GitHub Pages. Every question carries a legal
-> citation so the player can verify it. **Educational game, not legal advice.**
+## ⚠️ Accuracy disclaimer
 
-## ⚠️ Дисклеймер о достоверности
+This is an **educational game, not legal advice**. The content is limited to
+stable, well-known norms that rarely change. Even so, legislation changes —
+**always verify against the current edition** at
+[pravo.gov.ru](http://pravo.gov.ru) or in ConsultantPlus.
 
-Это **образовательная игра, а не юридическая консультация**. Контент
-ограничен устойчивыми, общеизвестными нормами, которые редко меняются. Тем не
-менее законодательство меняется — **всегда сверяйтесь с актуальной редакцией**
-на [pravo.gov.ru](http://pravo.gov.ru) или в КонсультантПлюс.
+Content accuracy policy:
 
-Политика достоверности контента:
+- Only facts we are highly confident are correct and stable are included.
+- Where the exact article number is not absolutely reliable, the question is
+  phrased about the **code/branch** ("which code governs…") rather than the exact
+  number.
+- **Every** question carries a `citation` field (for example,
+  `Art. 158, Criminal Code of the Russian Federation`), shown after the answer
+  for self-checking.
+- Fewer rock-solid questions are preferred over many debatable ones.
 
-- Включаются только факты, в корректности и стабильности которых есть высокая
-  уверенность.
-- Где точный номер статьи не абсолютно надёжен, вопрос формулируется про
-  **кодекс/отрасль** («каким кодексом регулируется…»), а не про точный номер.
-- **Каждый** вопрос несёт поле `citation` (например, `ст. 158 УК РФ`), которое
-  показывается после ответа для самостоятельной проверки.
-- Лучше меньше железобетонных вопросов, чем много спорных.
+## Features
 
-## Возможности
+- 4 question types: "Which code?", "Guess the article", "True / False", and
+  "Case".
+- 7 branches of law: civil, criminal, labour, family, administrative, tax and
+  constitutional — selectable before a round.
+- Points with a combo multiplier for streaks and a speed bonus (optional timer).
+- XP, levels and fun legal ranks, with a progress bar.
+- Spaced repetition: questions you got wrong come back sooner, mastered ones less
+  often. Progress is stored in `localStorage`.
+- "Review your mistakes" mode that replays only the questions you previously
+  missed.
+- After every answer — an explanation of "why this norm" plus a citation.
+- Keyboard shortcuts: press 1–4 to answer, Enter to continue.
+- An optional sound toggle for correct/wrong feedback, persisted.
+- Results screen with "share your result" (copies text, no network).
+- A juicy, responsive UI: animations, combo flashes, dark/light theme, mobile
+  layout, and `prefers-reduced-motion` support.
 
-- 4 типа вопросов: «Какой кодекс?», «Угадай статью», «Верю / не верю»,
-  «Кейс».
-- 7 отраслей: гражданское, уголовное, трудовое, семейное, административное,
-  налоговое, конституционное — можно выбирать перед раундом.
-- Очки с множителем комбо за серии и бонусом за скорость (опциональный таймер).
-- XP, уровни и весёлые юридические звания, прогресс-бар.
-- Интервальное повторение (spaced repetition): вопросы с ошибками возвращаются
-  раньше, освоенные — реже. Прогресс хранится в `localStorage`.
-- После каждого ответа — объяснение «почему именно эта норма» и ссылка на неё.
-- Экран итогов с «поделиться результатом» (копирование текста, без сети).
-- Сочный отзывчивый UI: анимации, комбо-вспышки, тёмная/светлая тема,
-  адаптивность под телефон, поддержка `prefers-reduced-motion`.
-
-## Запуск
+## Running
 
 ```bash
 npm install
-npm run dev      # локальная разработка (Vite)
-npm run build    # tsc --noEmit + сборка в dist/
-npm run preview  # предпросмотр собранной версии
-npm test         # юнит-тесты (Vitest)
+npm run dev      # local development (Vite)
+npm run build    # tsc --noEmit + build into dist/
+npm run preview  # preview the built version
+npm test         # unit tests (Vitest)
 ```
 
-## Деплой на GitHub Pages
+## Deploying to GitHub Pages
 
-1. Создайте репозиторий на GitHub и запушьте код в ветку `main`.
-2. В *Settings → Pages → Build and deployment* выберите **GitHub Actions**.
-3. Воркфлоу `.github/workflows/deploy.yml` сам прогонит тесты, соберёт проект и
-   опубликует `dist/`. `base: './'` в `vite.config.ts` делает сборку пригодной
-   для подкаталога Pages.
+1. Create a repository on GitHub and push the code to the `main` branch.
+2. In *Settings → Pages → Build and deployment*, choose **GitHub Actions**.
+3. The `.github/workflows/deploy.yml` workflow runs the tests, builds the project
+   and publishes `dist/`. `base: './'` in `vite.config.ts` makes the build work
+   from a Pages subdirectory.
 
-## Как добавить свои вопросы
+## Adding your own questions
 
-Вопросы лежат в `src/data/questions.ts` (массив `QUESTIONS`). Схема описана в
-`src/data/types.ts`. Каждый объект:
+Questions live in `src/data/questions.ts` (the `QUESTIONS` array). The schema is
+described in `src/data/types.ts`. Each object:
 
 ```ts
 {
-  id: "уникальный-стабильный-id",   // string, используется для прогресса в localStorage
-  category: "civil",                 // civil | criminal | labor | family | admin | tax | constitutional
-  type: "code",                      // code | article | myth | case
-  prompt: "Текст вопроса/ситуации",
-  options: ["Вариант A", "Вариант B"], // для type "myth" строго ["Верю", "Не верю"]
-  correctIndex: 0,                   // индекс правильного варианта в options
-  explanation: "Почему именно эта норма (показывается после ответа)",
-  citation: "ст. 454 ГК РФ",         // ссылка для самопроверки — обязательна
-  difficulty: 1                      // 1 | 2 | 3
+  id: "unique-stable-id",            // string, used for progress in localStorage
+  category: "civil",                  // civil | criminal | labor | family | admin | tax | constitutional
+  type: "code",                       // code | article | myth | case
+  prompt: "Text of the question/situation",
+  options: ["Option A", "Option B"], // for type "myth" strictly ["True", "False"]
+  correctIndex: 0,                    // index of the correct option in options
+  explanation: "Why this norm (shown after the answer)",
+  citation: "Art. 454, Civil Code of the Russian Federation", // verification reference — required
+  difficulty: 1                       // 1 | 2 | 3
 }
 ```
 
-Тест целостности данных (`src/data/questions.test.ts`) автоматически проверяет
-каждый объект: валидный `correctIndex` в диапазоне `options`, непустые
-`citation` и `explanation`, корректные `category`/`type`, уникальные `id` и
-варианты. Если добавите некорректный вопрос — `npm test` упадёт. Это защищает
-структуру и достоверность контента.
+The data-integrity test (`src/data/questions.test.ts`) automatically checks every
+object: a valid `correctIndex` within `options`, non-empty `citation` and
+`explanation`, correct `category`/`type`, unique `id`s and options, and that no
+field contains Cyrillic characters. Add an invalid question and `npm test` fails.
+This protects the structure and accuracy of the content.
 
-## Архитектура
+## Architecture
 
-- `src/data/` — данные и схема (вопросы, типы, категории).
-- `src/lib/` — **чистые функции** игровой логики, покрытые тестами:
-  - `scoring.ts` — очки, комбо-множитель, бонус за время, точность.
-  - `levels.ts` — XP-пороги, звания, прогресс уровня.
-  - `srs.ts` — очередь интервального повторения.
-  - `answer.ts` — проверка ответа, фильтр по категориям, детерминированный shuffle.
-  - `share.ts` — текст «поделиться».
-  - `storage.ts` — тонкая обёртка над `localStorage` (единственный I/O).
-- `src/main.ts` — UI и связывание (рендер экранов, таймер, анимации).
+- `src/data/` — data and schema (questions, types, categories).
+- `src/lib/` — **pure functions** for game logic, covered by tests:
+  - `scoring.ts` — points, combo multiplier, time bonus, accuracy.
+  - `levels.ts` — XP thresholds, ranks, level progress.
+  - `srs.ts` — the spaced-repetition queue.
+  - `answer.ts` — answer checking, category filtering, deterministic shuffle.
+  - `share.ts` — the "share" text.
+  - `storage.ts` — a thin wrapper over `localStorage` (the only I/O).
+- `src/main.ts` — UI and wiring (screen rendering, timer, animations, keyboard,
+  sound).
 
-## Ограничения (честно)
+## Limitations (honestly)
 
-- Контент намеренно базовый: общеизвестные принципы и «иконичные» статьи. Это
-  **не** охватывает редакционные нюансы, региональное право, судебную практику
-  и пороговые суммы (которые меняются).
-- Номера статей и пороги со временем могут измениться — `citation` дана именно
-  для перепроверки в актуальной редакции.
-- Прогресс хранится только в `localStorage` текущего браузера: очистка данных
-  или другой браузер/устройство = начать заново. Нет синхронизации между
-  устройствами (это осознанный zero-cost / no-backend выбор).
-- Это игра, а не справочная система и не замена консультации юриста.
+- The content is deliberately basic: well-known principles and "iconic" articles.
+  It does **not** cover editorial nuances, regional law, case law, or threshold
+  amounts (which change).
+- Article numbers and thresholds may change over time — the `citation` is given
+  precisely so you can re-check against the current edition.
+- Progress is stored only in the current browser's `localStorage`: clearing data
+  or using another browser/device means starting over. There is no cross-device
+  sync (a deliberate zero-cost / no-backend choice).
+- This is a game, not a reference system and not a substitute for advice from a
+  lawyer.
 
-## Лицензия
+## License
 
 MIT © 2026 georgerum07
