@@ -9,7 +9,15 @@ import {
 import { isCorrect, filterByCategories, seededShuffle } from "./lib/answer";
 import { scoreAnswer, comboMultiplier, accuracyPercent, type RoundStats } from "./lib/scoring";
 import { levelForXp, nextLevel, levelProgress } from "./lib/levels";
-import { newCard, reviewCard, tickQueue, pickNext, masteredCount, type CardState } from "./lib/srs";
+import {
+  newCard,
+  reviewCard,
+  tickQueue,
+  pickNext,
+  masteredCount,
+  mistakeIds as mistakeIdsPure,
+  type CardState,
+} from "./lib/srs";
 import { loadProgress, saveProgress, resetProgress, type Progress } from "./lib/storage";
 import { buildShareText } from "./lib/share";
 
@@ -19,7 +27,61 @@ const TIMER_MS = 25_000;
 const app = document.getElementById("app")!;
 let progress: Progress = loadProgress();
 
-// ------- Состояние раунда -------
+// ------- Sound (correct/wrong feedback), persisted in localStorage. -------
+const SOUND_KEY = "zakon-quest:sound:v1";
+let soundEnabled = loadSoundPref();
+
+function loadSoundPref(): boolean {
+  try {
+    // Default to on; only an explicit "0" disables sound.
+    return localStorage.getItem(SOUND_KEY) !== "0";
+  } catch {
+    return true;
+  }
+}
+
+function saveSoundPref(on: boolean): void {
+  try {
+    localStorage.setItem(SOUND_KEY, on ? "1" : "0");
+  } catch {
+    // ignore
+  }
+}
+
+let audioCtx: AudioContext | null = null;
+function playTone(correct: boolean): void {
+  if (!soundEnabled) return;
+  try {
+    const Ctor =
+      window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return;
+    audioCtx ??= new Ctor();
+    const ctx = audioCtx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = correct ? "triangle" : "sawtooth";
+    osc.frequency.value = correct ? 660 : 180;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
+    if (correct) osc.frequency.exponentialRampToValueAtTime(990, ctx.currentTime + 0.18);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.26);
+  } catch {
+    // Audio may be blocked or unsupported — ignore.
+  }
+}
+
+/** Ids of questions the player has gotten wrong (outstanding mistakes). */
+function mistakeIds(): string[] {
+  return mistakeIdsPure(
+    progress.cards,
+    QUESTIONS.map((q) => q.id),
+  );
+}
+
+// ------- Round state -------
 interface RoundState {
   queue: Question[];
   index: number;
@@ -31,13 +93,17 @@ interface RoundState {
   answered: number;
   score: number;
   answeredIds: Set<string>;
+  /** True when replaying previously-missed questions ("review your mistakes"). */
+  isReview: boolean;
 }
 
 let round: RoundState | null = null;
 let timerHandle: number | null = null;
 let timerStart = 0;
+// True once the current question has been answered (until the next renders).
+let questionAnswered = false;
 
-// ===================== Экраны =====================
+// ===================== Screens =====================
 
 function renderMenu(selected: Set<Category> = new Set()): void {
   stopTimer();
@@ -46,52 +112,62 @@ function renderMenu(selected: Set<Category> = new Set()): void {
   const progPct = Math.round(levelProgress(progress.xp) * 100);
   const acc = accuracyPercent({ total: progress.totalAnswered, correct: progress.totalCorrect });
   const mastered = masteredCount(progress.cards);
+  const mistakeCount = mistakeIds().length;
 
   app.innerHTML = `
-    <h1 class="title">📜 Познаём закон</h1>
-    <p class="subtitle">Игра-викторина по основам российского права. Угадывай кодекс, статью, отличай мифы от норм.</p>
+    <h1 class="title">📜 Know the Law</h1>
+    <p class="subtitle">A quiz about the basics of Russian law. Guess the code, the article, and tell myths from real norms.</p>
 
     <div class="disclaimer">
-      ⚠️ Это образовательная игра, а <b>не юридическая консультация</b>. Нормы права меняются —
-      сверяйтесь с актуальной редакцией на
+      ⚠️ This is an educational game, <b>not legal advice</b>. Legal norms change —
+      verify against the current edition at
       <a href="http://pravo.gov.ru" target="_blank" rel="noopener">pravo.gov.ru</a>
-      или в КонсультантПлюс. После каждого ответа показывается ссылка на норму для самопроверки.
+      or in ConsultantPlus. After every answer, a reference to the norm is shown for self-checking.
     </div>
 
     <div class="card">
       <div class="hud">
-        <div class="stat"><span class="label">Звание</span><span class="value">${lvl.title}</span></div>
+        <div class="stat"><span class="label">Rank</span><span class="value">${lvl.title}</span></div>
         <div class="stat"><span class="label">XP</span><span class="value">${progress.xp}</span></div>
         <div class="level-bar">
           <span class="label" style="font-size:.7rem;color:var(--muted)">${
-            next ? `до «${next.title}»` : "максимальный уровень"
+            next ? `to "${next.title}"` : "maximum level"
           }</span>
           <div class="track"><div class="fill" style="width:${progPct}%"></div></div>
         </div>
       </div>
       <div class="hud">
-        <div class="stat"><span class="label">Точность</span><span class="value">${acc}%</span></div>
-        <div class="stat"><span class="label">Ответов</span><span class="value">${progress.totalAnswered}</span></div>
-        <div class="stat"><span class="label">Освоено</span><span class="value">${mastered}/${QUESTIONS.length}</span></div>
+        <div class="stat"><span class="label">Accuracy</span><span class="value">${acc}%</span></div>
+        <div class="stat"><span class="label">Answered</span><span class="value">${progress.totalAnswered}</span></div>
+        <div class="stat"><span class="label">Mastered</span><span class="value">${mastered}/${QUESTIONS.length}</span></div>
       </div>
     </div>
 
     <div class="card">
-      <h3>Выбери отрасли права</h3>
+      <h3>Choose branches of law</h3>
       <div class="chips" id="cats"></div>
-      <p class="chip-hint">Ничего не выбрано — играем по всем отраслям.</p>
+      <p class="chip-hint">Nothing selected — we play across all branches.</p>
       <label class="chip-hint" style="display:flex;gap:8px;align-items:center;margin-top:12px;cursor:pointer">
-        <input type="checkbox" id="timer" checked /> Включить таймер (бонус за скорость)
+        <input type="checkbox" id="timer" checked /> Enable the timer (speed bonus)
+      </label>
+      <label class="chip-hint" style="display:flex;gap:8px;align-items:center;margin-top:8px;cursor:pointer">
+        <input type="checkbox" id="sound" ${soundEnabled ? "checked" : ""} /> Sound effects
       </label>
       <div style="height:14px"></div>
-      <button class="btn" id="start">▶ Играть (${QUESTIONS_PER_ROUND} вопросов)</button>
+      <button class="btn" id="start">▶ Play (${QUESTIONS_PER_ROUND} questions)</button>
+      ${
+        mistakeCount > 0
+          ? `<div style="height:10px"></div><button class="btn secondary" id="review">🔁 Review your mistakes (${mistakeCount})</button>`
+          : ""
+      }
       <div style="height:10px"></div>
-      <button class="btn ghost" id="reset">Сбросить прогресс</button>
+      <button class="btn ghost" id="reset">Reset progress</button>
+      <p class="chip-hint" style="margin-top:12px">Keyboard: press 1–4 to answer, Enter to continue.</p>
     </div>
 
     <footer>
-      Открытый код · MIT · хостинг GitHub Pages · работает офлайн, без сбора данных.<br />
-      Прогресс хранится только в этом браузере (localStorage).
+      Open source · MIT · hosted on GitHub Pages · works offline, no data collection.<br />
+      Progress is stored only in this browser (localStorage).
     </footer>
   `;
 
@@ -109,24 +185,39 @@ function renderMenu(selected: Set<Category> = new Set()): void {
     catsEl.appendChild(btn);
   });
 
+  const soundEl = app.querySelector("#sound") as HTMLInputElement;
+  soundEl.addEventListener("change", () => {
+    soundEnabled = soundEl.checked;
+    saveSoundPref(soundEnabled);
+    if (soundEnabled) playTone(true);
+  });
+
   app.querySelector("#start")!.addEventListener("click", () => {
     const useTimer = (app.querySelector("#timer") as HTMLInputElement).checked;
     startRound(selected, useTimer);
   });
 
+  const reviewBtn = app.querySelector("#review");
+  if (reviewBtn) {
+    reviewBtn.addEventListener("click", () => {
+      const useTimer = (app.querySelector("#timer") as HTMLInputElement).checked;
+      startReview(useTimer);
+    });
+  }
+
   app.querySelector("#reset")!.addEventListener("click", () => {
-    if (confirm("Сбросить весь прогресс, XP и освоенные вопросы?")) {
+    if (confirm("Reset all progress, XP and mastered questions?")) {
       resetProgress();
       progress = loadProgress();
       renderMenu();
-      toast("Прогресс сброшен");
+      toast("Progress reset");
     }
   });
 }
 
 function startRound(selectedCats: Set<Category>, useTimer: boolean): void {
   const pool = filterByCategories(QUESTIONS, selectedCats);
-  // Стартовая очередь: приоритет вопросам из SRS, затем добор по seeded shuffle.
+  // Starting queue: prioritise SRS questions, then top up via seeded shuffle.
   const poolIds = pool.map((q) => q.id);
   const byId = new Map(pool.map((q) => [q.id, q]));
   const ordered: Question[] = [];
@@ -135,7 +226,7 @@ function startRound(selectedCats: Set<Category>, useTimer: boolean): void {
   const shuffled = seededShuffle(poolIds, seed);
   const cardsCopy = { ...progress.cards };
 
-  // Сначала — просроченные ошибки/новые через pickNext, затем остаток.
+  // First — overdue mistakes/new questions via pickNext, then the remainder.
   for (let i = 0; i < QUESTIONS_PER_ROUND && ordered.length < pool.length; i++) {
     const next = pickNext(
       shuffled.filter((id) => !used.has(id)),
@@ -145,10 +236,40 @@ function startRound(selectedCats: Set<Category>, useTimer: boolean): void {
     used.add(next);
     ordered.push(byId.get(next)!);
   }
-  // Если вопросов меньше QUESTIONS_PER_ROUND — играем сколько есть.
+  // If there are fewer than QUESTIONS_PER_ROUND questions, play however many there are.
 
+  beginRound(ordered, selectedCats, useTimer, false);
+}
+
+/**
+ * "Review your mistakes" mode: replay only questions the player previously got
+ * wrong (non-mastered SRS cards), shuffled. Falls back to the menu if none.
+ */
+function startReview(useTimer: boolean): void {
+  const ids = new Set(mistakeIds());
+  const pool = QUESTIONS.filter((q) => ids.has(q.id));
+  if (pool.length === 0) {
+    toast("No mistakes to review — nice work!");
+    return;
+  }
+  const seed = Date.now() & 0xffffffff;
+  const order = seededShuffle(
+    pool.map((q) => q.id),
+    seed,
+  );
+  const byId = new Map(pool.map((q) => [q.id, q]));
+  const ordered = order.slice(0, QUESTIONS_PER_ROUND).map((id) => byId.get(id)!);
+  beginRound(ordered, new Set<Category>(), useTimer, true);
+}
+
+function beginRound(
+  queue: Question[],
+  selectedCats: Set<Category>,
+  useTimer: boolean,
+  isReview: boolean,
+): void {
   round = {
-    queue: ordered,
+    queue,
     index: 0,
     selectedCats,
     useTimer,
@@ -158,6 +279,7 @@ function startRound(selectedCats: Set<Category>, useTimer: boolean): void {
     answered: 0,
     score: 0,
     answeredIds: new Set(),
+    isReview,
   };
   renderQuestion();
 }
@@ -167,16 +289,17 @@ function renderQuestion(): void {
   if (round.index >= round.queue.length) return renderResults();
 
   stopTimer();
+  questionAnswered = false;
   const q = round.queue[round.index];
 
   app.innerHTML = `
     <div class="hud">
-      <div class="stat"><span class="label">Счёт</span><span class="value" id="score">${round.score}</span></div>
-      <div class="stat"><span class="label">Серия</span><span class="value">${
+      <div class="stat"><span class="label">Score</span><span class="value" id="score">${round.score}</span></div>
+      <div class="stat"><span class="label">Streak</span><span class="value">${
         round.streak > 0 ? `🔥 ${round.streak}` : "—"
       }</span></div>
       <div class="stat" style="margin-left:auto;text-align:right">
-        <span class="label">Множитель</span><span class="value">×${comboMultiplier(round.streak + 1)}</span>
+        <span class="label">Multiplier</span><span class="value">×${comboMultiplier(round.streak + 1)}</span>
       </div>
     </div>
 
@@ -184,15 +307,16 @@ function renderQuestion(): void {
       <div class="q-meta">
         <span class="tag">${CATEGORIES[q.category].emoji} ${CATEGORIES[q.category].title}</span>
         <span class="tag">${QUESTION_TYPES[q.type].title}</span>
+        ${round.isReview ? `<span class="tag">🔁 Review</span>` : ""}
         <span class="q-progress">${round.index + 1} / ${round.queue.length}</span>
-        ${round.useTimer ? `<span class="timer" id="timer">${(TIMER_MS / 1000) | 0}с</span>` : ""}
+        ${round.useTimer ? `<span class="timer" id="timer">${(TIMER_MS / 1000) | 0}s</span>` : ""}
       </div>
       <div class="prompt">${escapeHtml(q.prompt)}</div>
       <div class="options" id="options"></div>
       <div id="fb"></div>
       <div id="cont"></div>
     </div>
-    <button class="btn ghost" id="quit">Закончить раунд</button>
+    <button class="btn ghost" id="quit">End round</button>
   `;
 
   const optionsEl = app.querySelector("#options")!;
@@ -216,12 +340,12 @@ function startTimer(q: Question): void {
     const remaining = TIMER_MS - (Date.now() - timerStart);
     if (el) {
       const sec = Math.max(0, Math.ceil(remaining / 1000));
-      el.textContent = `${sec}с`;
+      el.textContent = `${sec}s`;
       el.classList.toggle("low", sec <= 5);
     }
     if (remaining <= 0) {
       stopTimer();
-      // Время вышло — засчитываем как неверный ответ (индекс вне диапазона).
+      // Time is up — counts as a wrong answer (index out of range).
       answer(q, -1);
     }
   }, 200);
@@ -236,11 +360,15 @@ function stopTimer(): void {
 
 function answer(q: Question, selectedIndex: number): void {
   if (!round) return;
+  if (questionAnswered) return;
+  questionAnswered = true;
   stopTimer();
   const correct = selectedIndex >= 0 && isCorrect(q, selectedIndex);
   const remainingMs = round.useTimer ? Math.max(0, TIMER_MS - (Date.now() - timerStart)) : 0;
 
-  // Обновляем серию и очки.
+  playTone(correct);
+
+  // Update streak and score.
   round.streak = correct ? round.streak + 1 : 0;
   round.bestStreak = Math.max(round.bestStreak, round.streak);
   const gained = scoreAnswer({
@@ -255,7 +383,7 @@ function answer(q: Question, selectedIndex: number): void {
   if (correct) round.correct += 1;
   round.answeredIds.add(q.id);
 
-  // Обновляем SRS-карточку и глобальный прогресс.
+  // Update the SRS card and the global progress.
   const card: CardState = progress.cards[q.id] ?? newCard(q.id);
   progress.cards[q.id] = reviewCard(card, correct);
   progress.cards = Object.fromEntries(tickQueue(Object.values(progress.cards)).map((c) => [c.id, c]));
@@ -265,7 +393,7 @@ function answer(q: Question, selectedIndex: number): void {
   progress.bestStreak = Math.max(progress.bestStreak, round.bestStreak);
   saveProgress(progress);
 
-  // Подсветка вариантов.
+  // Highlight the options.
   const btns = Array.from(app.querySelectorAll(".option")) as HTMLButtonElement[];
   btns.forEach((b, i) => {
     b.disabled = true;
@@ -283,14 +411,14 @@ function answer(q: Question, selectedIndex: number): void {
     setTimeout(() => qcard?.classList.remove("shake"), 450);
   }
 
-  // Фидбэк с объяснением и ссылкой.
+  // Feedback with an explanation and a citation.
   const fb = app.querySelector("#fb")!;
   const timedOut = selectedIndex === -1;
   fb.innerHTML = `
     <div class="feedback ${correct ? "good" : "bad"}">
       ${gained > 0 ? `<span class="points">+${gained}</span>` : ""}
       <div class="verdict">${
-        correct ? "✅ Верно!" : timedOut ? "⏰ Время вышло" : "❌ Не угадал"
+        correct ? "✅ Correct!" : timedOut ? "⏰ Time's up" : "❌ Not quite"
       }</div>
       <div class="explanation">${escapeHtml(q.explanation)}</div>
       <div class="citation">📖 ${escapeHtml(q.citation)}</div>
@@ -299,7 +427,7 @@ function answer(q: Question, selectedIndex: number): void {
 
   const cont = app.querySelector("#cont")!;
   cont.innerHTML = `<div style="height:14px"></div><button class="btn" id="next">${
-    round.index + 1 >= round.queue.length ? "Итоги раунда →" : "Дальше →"
+    round.index + 1 >= round.queue.length ? "Round results →" : "Next →"
   }</button>`;
   const nextBtn = cont.querySelector("#next") as HTMLButtonElement;
   nextBtn.addEventListener("click", () => {
@@ -324,26 +452,28 @@ function renderResults(): void {
   const progPct = Math.round(levelProgress(progress.xp) * 100);
 
   const grade =
-    acc >= 90 ? "Блестяще! 🏆" : acc >= 70 ? "Отличный результат! 👏" : acc >= 50 ? "Неплохо, продолжай! 💪" : "Есть куда расти 📚";
+    acc >= 90 ? "Brilliant! 🏆" : acc >= 70 ? "Great result! 👏" : acc >= 50 ? "Not bad, keep going! 💪" : "Room to grow 📚";
+
+  const wasReview = round.isReview;
 
   app.innerHTML = `
-    <h1 class="title">Итоги раунда</h1>
+    <h1 class="title">Round results</h1>
     <p class="subtitle">${grade}</p>
 
     <div class="card">
       <div class="result-grid">
-        <div class="result-cell"><div class="big">${stats.score}</div><div class="lbl">Очки</div></div>
-        <div class="result-cell"><div class="big">${acc}%</div><div class="lbl">Точность</div></div>
-        <div class="result-cell"><div class="big">${stats.correct}/${stats.total}</div><div class="lbl">Правильно</div></div>
-        <div class="result-cell"><div class="big">🔥 ${stats.bestStreak}</div><div class="lbl">Лучшая серия</div></div>
+        <div class="result-cell"><div class="big">${stats.score}</div><div class="lbl">Score</div></div>
+        <div class="result-cell"><div class="big">${acc}%</div><div class="lbl">Accuracy</div></div>
+        <div class="result-cell"><div class="big">${stats.correct}/${stats.total}</div><div class="lbl">Correct</div></div>
+        <div class="result-cell"><div class="big">🔥 ${stats.bestStreak}</div><div class="lbl">Best streak</div></div>
       </div>
 
       <div class="hud" style="margin-top:6px">
-        <div class="stat"><span class="label">Звание</span><span class="value">${lvl.title}</span></div>
+        <div class="stat"><span class="label">Rank</span><span class="value">${lvl.title}</span></div>
         <div class="stat"><span class="label">XP</span><span class="value">${progress.xp}</span></div>
         <div class="level-bar">
           <span class="label" style="font-size:.7rem;color:var(--muted)">${
-            next ? `до «${next.title}»` : "максимальный уровень"
+            next ? `to "${next.title}"` : "maximum level"
           }</span>
           <div class="track"><div class="fill" style="width:${progPct}%"></div></div>
         </div>
@@ -351,16 +481,18 @@ function renderResults(): void {
     </div>
 
     <div class="row">
-      <button class="btn" id="again">↻ Ещё раунд</button>
-      <button class="btn secondary" id="share">📋 Поделиться</button>
+      <button class="btn" id="again">↻ Play again</button>
+      <button class="btn secondary" id="share">📋 Share</button>
     </div>
     <div style="height:10px"></div>
-    <button class="btn ghost" id="menu">В меню</button>
+    <button class="btn ghost" id="menu">Back to menu</button>
   `;
 
-  app.querySelector("#again")!.addEventListener("click", () =>
-    startRound(round!.selectedCats, round!.useTimer),
-  );
+  app.querySelector("#again")!.addEventListener("click", () => {
+    const useTimer = round!.useTimer;
+    if (wasReview) startReview(useTimer);
+    else startRound(round!.selectedCats, useTimer);
+  });
   app.querySelector("#menu")!.addEventListener("click", () => {
     round = null;
     renderMenu();
@@ -369,15 +501,15 @@ function renderResults(): void {
     const text = buildShareText(stats, lvl.title);
     try {
       await navigator.clipboard.writeText(text);
-      toast("Результат скопирован в буфер обмена");
+      toast("Result copied to clipboard");
     } catch {
-      // Фолбэк без сети: показываем текст для ручного копирования.
-      prompt("Скопируйте результат:", text);
+      // No-network fallback: show the text for manual copying.
+      prompt("Copy your result:", text);
     }
   });
 }
 
-// ===================== Утилиты UI =====================
+// ===================== UI utilities =====================
 
 function flashCombo(streak: number): void {
   const el = document.createElement("div");
@@ -409,5 +541,33 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-// ===================== Старт =====================
+// ===================== Keyboard shortcuts =====================
+// During a question: keys 1–4 select an option, Enter advances to the next
+// question (or results) once the question has been answered.
+document.addEventListener("keydown", (e) => {
+  if (!round) return;
+  if (e.target instanceof HTMLInputElement) return;
+
+  if (e.key === "Enter") {
+    const nextBtn = app.querySelector("#next") as HTMLButtonElement | null;
+    if (nextBtn) {
+      e.preventDefault();
+      nextBtn.click();
+    }
+    return;
+  }
+
+  if (questionAnswered) return;
+  const n = Number(e.key);
+  if (Number.isInteger(n) && n >= 1 && n <= 4) {
+    const options = Array.from(app.querySelectorAll(".option")) as HTMLButtonElement[];
+    const btn = options[n - 1];
+    if (btn && !btn.disabled) {
+      e.preventDefault();
+      btn.click();
+    }
+  }
+});
+
+// ===================== Start =====================
 renderMenu();

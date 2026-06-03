@@ -5,24 +5,25 @@ import {
   tickQueue,
   pickNext,
   masteredCount,
+  mistakeIds,
   MASTERY_STREAK,
   type CardState,
 } from "./srs";
 
 describe("reviewCard", () => {
-  it("правильный ответ увеличивает серию и интервал", () => {
+  it("a correct answer grows the streak and the interval", () => {
     const c = reviewCard(newCard("a"), true);
     expect(c.streak).toBe(1);
     expect(c.mastered).toBe(false);
     expect(c.dueIn).toBe(2);
   });
-  it("осваивается после MASTERY_STREAK правильных", () => {
+  it("becomes mastered after MASTERY_STREAK correct answers", () => {
     let c = newCard("a");
     for (let i = 0; i < MASTERY_STREAK; i++) c = reviewCard(c, true);
     expect(c.mastered).toBe(true);
     expect(c.streak).toBe(MASTERY_STREAK);
   });
-  it("ошибка сбрасывает серию и освоенность и возвращает скоро", () => {
+  it("a mistake resets the streak and mastery and brings it back soon", () => {
     let c = newCard("a");
     c = reviewCard(c, true);
     c = reviewCard(c, true);
@@ -36,7 +37,7 @@ describe("reviewCard", () => {
 });
 
 describe("tickQueue", () => {
-  it("уменьшает dueIn, не уходя ниже 0", () => {
+  it("decreases dueIn without going below 0", () => {
     const cards: CardState[] = [
       { id: "a", streak: 1, mastered: false, dueIn: 2 },
       { id: "b", streak: 0, mastered: false, dueIn: 0 },
@@ -48,46 +49,70 @@ describe("tickQueue", () => {
 });
 
 describe("pickNext", () => {
-  it("приоритет у просроченной ошибки", () => {
+  it("prioritises an overdue mistake", () => {
     const cards: Record<string, CardState> = {
-      a: { id: "a", streak: 0, mastered: false, dueIn: 0 }, // отвечали, ошиблись, созрела
+      a: { id: "a", streak: 0, mastered: false, dueIn: 0 }, // answered, got it wrong, ripe
       b: { id: "b", streak: 5, mastered: true, dueIn: 0 },
     };
     expect(pickNext(["a", "b"], cards)).toBe("a");
   });
-  it("берёт новый вопрос, если нет просроченных ошибок", () => {
+  it("takes a new question when there are no overdue mistakes", () => {
     const cards: Record<string, CardState> = {
       a: { id: "a", streak: 5, mastered: true, dueIn: 3 },
     };
     expect(pickNext(["a", "newOne"], cards)).toBe("newOne");
   });
-  it("исключает только что показанный вопрос", () => {
+  it("excludes the just-shown question", () => {
     const cards: Record<string, CardState> = {};
     const picked = pickNext(["a", "b"], cards, "a");
     expect(picked).toBe("b");
   });
-  it("возвращает исключённый, если других нет", () => {
+  it("returns the excluded one when there are no others", () => {
     expect(pickNext(["a"], {}, "a")).toBe("a");
   });
-  it("null при пустом списке", () => {
+  it("null for an empty list", () => {
     expect(pickNext([], {})).toBeNull();
   });
-  it("освоенный неошибочный вопрос с dueIn>0 не выдаётся как due", () => {
+  it("a mastered, non-mistaken question with dueIn>0 is not returned as due", () => {
     const cards: Record<string, CardState> = {
       a: { id: "a", streak: 3, mastered: true, dueIn: 0 },
-      b: { id: "b", streak: 0, mastered: false, dueIn: 0 }, // ошибка, созрела
+      b: { id: "b", streak: 0, mastered: false, dueIn: 0 }, // mistake, ripe
     };
     expect(pickNext(["a", "b"], cards)).toBe("b");
   });
 });
 
 describe("masteredCount", () => {
-  it("считает освоенные карточки", () => {
+  it("counts mastered cards", () => {
     const cards: Record<string, CardState> = {
       a: { id: "a", streak: 3, mastered: true, dueIn: 8 },
       b: { id: "b", streak: 1, mastered: false, dueIn: 2 },
       c: { id: "c", streak: 4, mastered: true, dueIn: 16 },
     };
     expect(masteredCount(cards)).toBe(2);
+  });
+});
+
+describe("mistakeIds", () => {
+  const cards: Record<string, CardState> = {
+    a: { id: "a", streak: 0, mastered: false, dueIn: 1 }, // mistake
+    b: { id: "b", streak: 3, mastered: true, dueIn: 8 }, // mastered, not a mistake
+    c: { id: "c", streak: 1, mastered: false, dueIn: 2 }, // answered, not yet mastered
+    gone: { id: "gone", streak: 0, mastered: false, dueIn: 1 }, // stale, removed question
+  };
+
+  it("returns answered-but-not-mastered known questions", () => {
+    const ids = mistakeIds(cards, ["a", "b", "c"]);
+    expect(ids.sort()).toEqual(["a", "c"]);
+  });
+  it("ignores cards for questions no longer in the set", () => {
+    const ids = mistakeIds(cards, ["a", "b", "c"]);
+    expect(ids).not.toContain("gone");
+  });
+  it("returns an empty array when everything is mastered", () => {
+    const allMastered: Record<string, CardState> = {
+      a: { id: "a", streak: 3, mastered: true, dueIn: 8 },
+    };
+    expect(mistakeIds(allMastered, ["a"])).toEqual([]);
   });
 });
