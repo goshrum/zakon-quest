@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Познаём закон — образовательная игра-викторина по российскому праву",
+  "description": "Know the Law — an educational quiz game about the Russian legal system",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

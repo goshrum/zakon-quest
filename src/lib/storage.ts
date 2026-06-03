@@ -1,5 +1,5 @@
-// Тонкая обёртка над localStorage для персистентности прогресса.
-// Логика остаётся в чистых функциях; здесь только I/O.
+// A thin wrapper over localStorage for persisting progress.
+// The logic stays in pure functions; this file only does I/O.
 
 import type { CardState } from "./srs";
 
@@ -32,7 +32,7 @@ export function saveProgress(p: Progress): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(p));
   } catch {
-    // localStorage может быть недоступен (приватный режим) — молча игнорируем.
+    // localStorage may be unavailable (private mode) — silently ignore.
   }
 }
 
@@ -40,6 +40,6 @@ export function resetProgress(): void {
   try {
     localStorage.removeItem(KEY);
   } catch {
-    // игнорируем
+    // ignore
   }
 }

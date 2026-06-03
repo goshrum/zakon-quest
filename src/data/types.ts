@@ -1,53 +1,53 @@
-// Тип отрасли права (категория вопроса).
+// Branch of law (question category).
 export type Category =
-  | "civil" // Гражданское
-  | "criminal" // Уголовное
-  | "labor" // Трудовое
-  | "family" // Семейное
-  | "admin" // Административное
-  | "tax" // Налоговое
-  | "constitutional"; // Конституционное / основы
+  | "civil" // Civil
+  | "criminal" // Criminal
+  | "labor" // Labour
+  | "family" // Family
+  | "admin" // Administrative
+  | "tax" // Tax
+  | "constitutional"; // Constitutional / fundamentals
 
-// Тип игрового вопроса.
+// Type of game question.
 export type QuestionType =
-  | "code" // "Какой кодекс?" — выбрать отрасль/кодекс
-  | "article" // "Угадай статью" — сопоставить норму со статьёй
-  | "myth" // "Верю/не верю" — правовой миф (true/false)
-  | "case"; // "Кейс" — короткий сценарий
+  | "code" // "Which code?" — pick the branch/code
+  | "article" // "Guess the article" — match a norm to an article
+  | "myth" // "True/False" — a legal myth (true/false)
+  | "case"; // "Case" — a short scenario
 
 export type Difficulty = 1 | 2 | 3;
 
 export interface Question {
-  /** Уникальный стабильный идентификатор (используется для прогресса в localStorage). */
+  /** Unique stable identifier (used for progress in localStorage). */
   id: string;
   category: Category;
   type: QuestionType;
-  /** Текст вопроса/ситуации. */
+  /** Text of the question/situation. */
   prompt: string;
-  /** Варианты ответа (для "myth" — ["Верю", "Не верю"]). */
+  /** Answer options (for "myth" — ["True", "False"]). */
   options: string[];
-  /** Индекс правильного варианта внутри options. */
+  /** Index of the correct option within options. */
   correctIndex: number;
-  /** Почему именно эта норма — показывается после ответа. */
+  /** Why this particular norm applies — shown after the answer. */
   explanation: string;
-  /** Ссылка на норму для проверки, напр. "ст. 158 УК РФ". */
+  /** Reference to the norm for verification, e.g. "Art. 158, Criminal Code of the Russian Federation". */
   citation: string;
   difficulty: Difficulty;
 }
 
 export const CATEGORIES: Record<Category, { title: string; emoji: string }> = {
-  civil: { title: "Гражданское", emoji: "🤝" },
-  criminal: { title: "Уголовное", emoji: "⚖️" },
-  labor: { title: "Трудовое", emoji: "💼" },
-  family: { title: "Семейное", emoji: "💍" },
-  admin: { title: "Административное", emoji: "🚦" },
-  tax: { title: "Налоговое", emoji: "💰" },
-  constitutional: { title: "Конституционное", emoji: "📜" },
+  civil: { title: "Civil", emoji: "🤝" },
+  criminal: { title: "Criminal", emoji: "⚖️" },
+  labor: { title: "Labour", emoji: "💼" },
+  family: { title: "Family", emoji: "💍" },
+  admin: { title: "Administrative", emoji: "🚦" },
+  tax: { title: "Tax", emoji: "💰" },
+  constitutional: { title: "Constitutional", emoji: "📜" },
 };
 
 export const QUESTION_TYPES: Record<QuestionType, { title: string }> = {
-  code: { title: "Какой кодекс?" },
-  article: { title: "Угадай статью" },
-  myth: { title: "Верю / не верю" },
-  case: { title: "Кейс" },
+  code: { title: "Which code?" },
+  article: { title: "Guess the article" },
+  myth: { title: "True / False" },
+  case: { title: "Case" },
 };
