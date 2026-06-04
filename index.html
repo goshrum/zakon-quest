@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,10 +8,15 @@
       name="description"
       content="Know the Law — an educational quiz game about the Russian legal system. Not legal advice."
     />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>📜 Know the Law</title>
   </head>
   <body>
-    <div id="app"></div>
+    <a class="skip-link" href="#app">Skip to main content</a>
+    <main id="app" role="main" tabindex="-1" aria-label="Know the Law quiz"></main>
+    <!-- Polite live region for score, streak and answer feedback announcements. -->
+    <div id="sr-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
