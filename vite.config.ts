@@ -1,10 +1,41 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  // Relative base so the app works under the GitHub Pages project subpath
-  // (https://<user>.github.io/zakon-quest/) as well as at the domain root.
+  // Relative base so the app and its service worker work under the GitHub Pages
+  // project subpath (https://<user>.github.io/zakon-quest/) as well as at root.
   base: "./",
+  plugins: [
+    VitePWA({
+      registerType: "autoUpdate",
+      strategies: "generateSW",
+      // Auto-injects the service-worker registration script into the built
+      // index.html, so no virtual import is needed in app code.
+      injectRegister: "auto",
+      includeAssets: ["favicon.svg"],
+      manifest: {
+        name: "Know the Law",
+        short_name: "Know the Law",
+        description: "An educational quiz game about the basics of the Russian legal system. Not legal advice.",
+        theme_color: "#0f1226",
+        background_color: "#0f1226",
+        display: "standalone",
+        orientation: "portrait",
+        // Relative scope/start so the PWA installs correctly under a subpath.
+        scope: "./",
+        start_url: "./",
+        icons: [
+          { src: "icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: "icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        ],
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,json,ico,woff2}"],
+      },
+    }),
+  ],
   test: {
     globals: true,
     environment: "node",
