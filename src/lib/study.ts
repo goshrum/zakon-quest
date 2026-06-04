@@ -12,11 +12,7 @@ import type { Category, Question } from "../data/types";
  *
  * The input array is never mutated.
  */
-export function filterQuestions(
-  questions: Question[],
-  query: string,
-  category?: Category | null,
-): Question[] {
+export function filterQuestions(questions: Question[], query: string, category?: Category | null): Question[] {
   const needle = query.trim().toLowerCase();
   return questions.filter((q) => {
     if (category && q.category !== category) return false;

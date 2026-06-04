@@ -49,11 +49,7 @@ export function tickQueue(cards: CardState[]): CardState[] {
  * Priority: 1) overdue mistakes (dueIn==0 and not mastered), 2) new questions,
  * 3) mastered ones that are most "ripe". Returns an id or null.
  */
-export function pickNext(
-  availableIds: string[],
-  cards: Record<string, CardState>,
-  excludeId?: string,
-): string | null {
+export function pickNext(availableIds: string[], cards: Record<string, CardState>, excludeId?: string): string | null {
   const pool = availableIds.filter((id) => id !== excludeId);
   if (pool.length === 0) {
     // If only the excluded one is left — return it anyway.

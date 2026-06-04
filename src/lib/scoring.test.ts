@@ -1,11 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  BASE_POINTS,
-  comboMultiplier,
-  timeBonus,
-  scoreAnswer,
-  accuracyPercent,
-} from "./scoring";
+import { BASE_POINTS, comboMultiplier, timeBonus, scoreAnswer, accuracyPercent } from "./scoring";
 
 describe("comboMultiplier", () => {
   it("1x for a streak of 0 or 1", () => {
@@ -56,15 +50,11 @@ describe("scoreAnswer", () => {
   });
   it("applies the speed bonus", () => {
     // 100 * 1 (streak 1) * 1.5 (instant) = 150
-    expect(
-      scoreAnswer({ correct: true, difficulty: 1, streak: 1, remainingMs: 1000, totalMs: 1000 }),
-    ).toBe(150);
+    expect(scoreAnswer({ correct: true, difficulty: 1, streak: 1, remainingMs: 1000, totalMs: 1000 })).toBe(150);
   });
   it("combines combo and time", () => {
     // 200 * 2 (streak 3) * 1.5 (instant) = 600
-    expect(
-      scoreAnswer({ correct: true, difficulty: 3, streak: 3, remainingMs: 500, totalMs: 500 }),
-    ).toBe(600);
+    expect(scoreAnswer({ correct: true, difficulty: 3, streak: 3, remainingMs: 500, totalMs: 500 })).toBe(600);
   });
 });
 
