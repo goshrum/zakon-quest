@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: "Know the Law"
+message: "If you use this project or its dataset, please cite it."
+type: software
+authors:
+  - alias: goshrum
+    name: goshrum
+repository-code: "https://github.com/goshrum/zakon-quest"
+url: "https://goshrum.github.io/zakon-quest/"
+abstract: >-
+  An open, schema-validated dataset of legal-literacy questions about the
+  Russian legal system, plus a privacy-first, offline-capable quiz application
+  that runs entirely in the browser.
+keywords:
+  - legal-education
+  - quiz
+  - open-dataset
+  - law
+  - pwa
+license: MIT
+version: 1.0.0
