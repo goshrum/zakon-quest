@@ -1,0 +1,994 @@
+[
+  {
+    "id": "civ-buy-sell-code",
+    "category": "civil",
+    "type": "code",
+    "prompt": "You buy a refrigerator at a store. Which code governs this contract of sale?",
+    "options": [
+      "Civil Code (CC RF)",
+      "Tax Code (TC RF)",
+      "Labour Code (LC RF)",
+      "Housing Code (HC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "A contract of sale is a classic civil-law contract, governed by Part Two of the Civil Code of the Russian Federation.",
+    "citation": "Art. 454, Civil Code of the Russian Federation (contract of sale)",
+    "difficulty": 1
+  },
+  {
+    "id": "civ-limitation-3y",
+    "category": "civil",
+    "type": "article",
+    "prompt": "What is the general limitation period for civil claims?",
+    "options": [
+      "1 year",
+      "3 years",
+      "5 years",
+      "10 years"
+    ],
+    "correctIndex": 1,
+    "explanation": "The general limitation period is three years. For certain claims the law sets special periods.",
+    "citation": "Art. 196, Civil Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "civ-harm-1064",
+    "category": "civil",
+    "type": "article",
+    "prompt": "A neighbour flooded your apartment. Which article of the Civil Code sets the general rule on compensation for harm caused?",
+    "options": [
+      "Art. 1064, Civil Code",
+      "Art. 105, Civil Code",
+      "Art. 20, Civil Code",
+      "Art. 333, Civil Code"
+    ],
+    "correctIndex": 0,
+    "explanation": "Article 1064 of the Civil Code is the general rule of tort liability: harm caused to a person or to property must be compensated in full by the one who caused it.",
+    "citation": "Art. 1064, Civil Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "civ-full-capacity-18",
+    "category": "civil",
+    "type": "myth",
+    "prompt": "\"As a general rule, full civil legal capacity is acquired at the age of 18.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. As a general rule, full civil legal capacity arises upon reaching the age of majority — 18 (there are exceptions: marriage, emancipation).",
+    "citation": "Art. 21, Civil Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "civ-legal-entity",
+    "category": "civil",
+    "type": "code",
+    "prompt": "Registration and legal status of an LLC (limited liability company) as a legal entity. Which code sets the basic rules on legal entities?",
+    "options": [
+      "Civil Code (CC RF)",
+      "Criminal Code (CrC RF)",
+      "Family Code (FC RF)",
+      "Administrative Offences Code (AOC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "The basic provisions on legal entities are contained in Chapter 4 of Part One of the Civil Code (details are in separate laws, e.g. the law on LLCs).",
+    "citation": "Ch. 4, Civil Code of the Russian Federation (legal entities)",
+    "difficulty": 2
+  },
+  {
+    "id": "civ-inheritance-code",
+    "category": "civil",
+    "type": "code",
+    "prompt": "Division of property after the death of a relative, by will or by law. Which code governs inheritance?",
+    "options": [
+      "Civil Code (CC RF)",
+      "Family Code (FC RF)",
+      "Tax Code (TC RF)",
+      "Housing Code (HC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Inheritance law is Part Three of the Civil Code (inheritance by will and by law).",
+    "citation": "Sect. V of Part Three, Civil Code of the Russian Federation (inheritance law)",
+    "difficulty": 1
+  },
+  {
+    "id": "civ-rent-code",
+    "category": "civil",
+    "type": "code",
+    "prompt": "You lease your apartment to a commercial firm for use as an office. Which code governs the lease contract?",
+    "options": [
+      "Civil Code (CC RF)",
+      "Housing Code (HC RF)",
+      "Labour Code (LC RF)",
+      "Tax Code (TC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "A lease (property hire) contract is governed by the Civil Code. The Housing Code primarily concerns housing relations (residential tenancy, utilities, building management).",
+    "citation": "Ch. 34, Civil Code of the Russian Federation (lease)",
+    "difficulty": 2
+  },
+  {
+    "id": "civ-contract-freedom",
+    "category": "civil",
+    "type": "myth",
+    "prompt": "\"Civil law operates on the principle of freedom of contract.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Freedom of contract is one of the core principles of civil law: parties are free to enter into a contract and to determine its terms, except in cases expressly provided by law.",
+    "citation": "Art. 421, Civil Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "civ-property-protect",
+    "category": "civil",
+    "type": "case",
+    "prompt": "Your bicycle was stolen, and you found it in another person's possession. The claim to recover your own thing from someone else's unlawful possession is called:",
+    "options": [
+      "A vindication claim",
+      "A recourse claim",
+      "A divorce petition",
+      "A cassation appeal"
+    ],
+    "correctIndex": 0,
+    "explanation": "Recovery of property by the owner from someone else's unlawful possession is a vindication claim (vindicatio).",
+    "citation": "Art. 301, Civil Code of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "civ-moral-harm",
+    "category": "civil",
+    "type": "code",
+    "prompt": "Compensation for moral harm (physical and mental suffering). Which code provides for it as a general institution?",
+    "options": [
+      "Civil Code (CC RF)",
+      "Criminal Code (CrC RF)",
+      "Administrative Offences Code (AOC RF)",
+      "Labour Code (LC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "The institution of compensation for moral harm is enshrined in the Civil Code (although the obligation may also arise in other relations, the base norms are civil).",
+    "citation": "Arts. 151, 1099–1101, Civil Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-theft-code",
+    "category": "criminal",
+    "type": "code",
+    "prompt": "A phone was secretly pulled from a passenger's pocket on a bus. Which code governs liability for theft?",
+    "options": [
+      "Criminal Code (CrC RF)",
+      "Administrative Offences Code (AOC RF)",
+      "Civil Code (CC RF)",
+      "Labour Code (LC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Theft — the secret stealing of another's property — is a criminal offence, with liability under the Criminal Code.",
+    "citation": "Art. 158, Criminal Code of the Russian Federation (theft)",
+    "difficulty": 1
+  },
+  {
+    "id": "cri-theft-article",
+    "category": "criminal",
+    "type": "article",
+    "prompt": "Which article of the Criminal Code provides for liability for theft?",
+    "options": [
+      "Art. 105",
+      "Art. 158",
+      "Art. 264",
+      "Art. 228"
+    ],
+    "correctIndex": 1,
+    "explanation": "Article 158 of the Criminal Code is theft, that is, the secret stealing of another's property.",
+    "citation": "Art. 158, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-murder-article",
+    "category": "criminal",
+    "type": "article",
+    "prompt": "The \"iconic\" article for murder in the Criminal Code is:",
+    "options": [
+      "Art. 105",
+      "Art. 158",
+      "Art. 159",
+      "Art. 111"
+    ],
+    "correctIndex": 0,
+    "explanation": "Article 105 of the Criminal Code is murder, that is, the intentional causing of another person's death.",
+    "citation": "Art. 105, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-fraud-article",
+    "category": "criminal",
+    "type": "article",
+    "prompt": "Fraud (stealing by deception or abuse of trust) is which article of the Criminal Code?",
+    "options": [
+      "Art. 158",
+      "Art. 159",
+      "Art. 161",
+      "Art. 162"
+    ],
+    "correctIndex": 1,
+    "explanation": "Article 159 of the Criminal Code is fraud. Theft is 158, robbery is 161, armed/violent robbery is 162.",
+    "citation": "Art. 159, Criminal Code of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "cri-age-16",
+    "category": "criminal",
+    "type": "article",
+    "prompt": "From what age, as a GENERAL rule, does criminal liability arise?",
+    "options": [
+      "from 14",
+      "from 16",
+      "from 18",
+      "from 21"
+    ],
+    "correctIndex": 1,
+    "explanation": "As a general rule, criminal liability arises from the age of 16. For a number of grave offences (a list set out in the law) — from 14.",
+    "citation": "Art. 20, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-presumption",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"Russia operates on the presumption of innocence.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The accused is presumed innocent until guilt is proven and established by a court verdict that has entered into force. Enshrined in both the Constitution and the Criminal Procedure Code.",
+    "citation": "Art. 49, Constitution of the Russian Federation; Art. 14, Criminal Procedure Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "cri-self-incrim",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"No one is obliged to testify against themselves or their close relatives.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes, this is a constitutional right: no one is obliged to testify against themselves, their spouse, or close relatives.",
+    "citation": "Art. 51, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "cri-no-double",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"A person can be convicted twice for the same offence.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "explanation": "No. No one may be convicted again for the same offence (the prohibition of double jeopardy).",
+    "citation": "Art. 50, Constitution of the Russian Federation; Art. 6, Criminal Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "cri-bribe-code",
+    "category": "criminal",
+    "type": "code",
+    "prompt": "An official was given money to \"speed up\" a decision. Which code provides for liability for taking/giving a bribe?",
+    "options": [
+      "Criminal Code (CrC RF)",
+      "Administrative Offences Code (AOC RF)",
+      "Tax Code (TC RF)",
+      "Civil Code (CC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Taking and giving a bribe are offences, with liability under the Criminal Code (Arts. 290, 291).",
+    "citation": "Arts. 290, 291, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-necessary-defense",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"Causing harm to an attacker in a state of necessary defence is not a crime (so long as its limits are observed).\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Necessary defence excludes the criminality of an act, provided its limits are not exceeded.",
+    "citation": "Art. 37, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-resign-80",
+    "category": "labor",
+    "type": "article",
+    "prompt": "You are resigning of your own accord. As a general rule, how many days in advance must you give written notice to the employer?",
+    "options": [
+      "3 days",
+      "14 days (2 weeks)",
+      "1 month",
+      "2 months"
+    ],
+    "correctIndex": 1,
+    "explanation": "As a general rule, an employee gives written notice of resignation on their own initiative two weeks in advance.",
+    "citation": "Art. 80, Labour Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "lab-dismiss-code",
+    "category": "labor",
+    "type": "code",
+    "prompt": "A dispute with an employer about dismissal, leave and wages. Which code governs this?",
+    "options": [
+      "Labour Code (LC RF)",
+      "Civil Code (CC RF)",
+      "Administrative Offences Code (AOC RF)",
+      "Tax Code (TC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Relations between an employee and an employer are governed by the Labour Code of the Russian Federation.",
+    "citation": "Labour Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "lab-vacation-28",
+    "category": "labor",
+    "type": "article",
+    "prompt": "As a general rule, what is the length of the annual basic paid leave?",
+    "options": [
+      "14 calendar days",
+      "21 calendar days",
+      "28 calendar days",
+      "31 calendar days"
+    ],
+    "correctIndex": 2,
+    "explanation": "The annual basic paid leave is 28 calendar days (for certain categories it is extended).",
+    "citation": "Art. 115, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-age-16",
+    "category": "labor",
+    "type": "article",
+    "prompt": "From what age, as a general rule, is it permitted to conclude an employment contract?",
+    "options": [
+      "from 14",
+      "from 16",
+      "from 18",
+      "from 15"
+    ],
+    "correctIndex": 1,
+    "explanation": "As a general rule, an employment contract may be concluded from the age of 16 (in established cases — earlier, with consent and under certain conditions).",
+    "citation": "Art. 63, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-probation-myth",
+    "category": "labor",
+    "type": "myth",
+    "prompt": "\"During a probationary period, labour law does not apply to the employee.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "explanation": "No. During the probationary period, the provisions of labour law, the collective agreement and local acts fully apply to the employee.",
+    "citation": "Art. 70, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-written-contract",
+    "category": "labor",
+    "type": "myth",
+    "prompt": "\"An employment contract must be concluded in written form.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. An employment contract is concluded in written form in two copies. Even when an employee is actually admitted to work, the contract must be put in writing.",
+    "citation": "Art. 67, Labour Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "lab-workweek-40",
+    "category": "labor",
+    "type": "article",
+    "prompt": "As a general rule, the normal duration of working time may not exceed:",
+    "options": [
+      "36 hours per week",
+      "40 hours per week",
+      "48 hours per week",
+      "45 hours per week"
+    ],
+    "correctIndex": 1,
+    "explanation": "The normal duration of working time may not exceed 40 hours per week.",
+    "citation": "Art. 91, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-min-wage",
+    "category": "labor",
+    "type": "myth",
+    "prompt": "\"Monthly wages, where the work-time quota is fully met, may not be lower than the minimum wage (MROT).\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The wages of an employee who has fully worked the work-time quota and met the labour norms may not be lower than the statutory minimum wage.",
+    "citation": "Art. 133, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "fam-marriage-code",
+    "category": "family",
+    "type": "code",
+    "prompt": "Marriage, divorce, alimony and division of spousal property. Which code governs this?",
+    "options": [
+      "Family Code (FC RF)",
+      "Civil Code (CC RF)",
+      "Labour Code (LC RF)",
+      "Housing Code (HC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Marriage and family relations are governed by the Family Code of the Russian Federation.",
+    "citation": "Family Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "fam-marriage-age-18",
+    "category": "family",
+    "type": "article",
+    "prompt": "As a general rule, the age of marriage in the Russian Federation is set at:",
+    "options": [
+      "16",
+      "18",
+      "21",
+      "14"
+    ],
+    "correctIndex": 1,
+    "explanation": "As a general rule, the age of marriage is 18. Where there are valid reasons, it may be lowered in the established manner.",
+    "citation": "Art. 13, Family Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "fam-joint-property",
+    "category": "family",
+    "type": "myth",
+    "prompt": "\"Property acquired by spouses during the marriage is, as a general rule, their joint property.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. As a general rule, property acquired during the marriage is the joint property of the spouses (unless a prenuptial agreement provides otherwise).",
+    "citation": "Art. 34, Family Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "fam-prenup-myth",
+    "category": "family",
+    "type": "myth",
+    "prompt": "\"A prenuptial (marriage) agreement is lawful and permitted in Russia.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. A marriage agreement is an agreement of the spouses on their property rights and obligations; it is provided for by the Family Code and must be notarised.",
+    "citation": "Arts. 40–42, Family Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "fam-alimony-code",
+    "category": "family",
+    "type": "code",
+    "prompt": "Recovery of alimony for the support of a minor child. Which code governs this?",
+    "options": [
+      "Family Code (FC RF)",
+      "Civil Code (CC RF)",
+      "Tax Code (TC RF)",
+      "Criminal Code (CrC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "The alimony obligations of parents and children are governed by the Family Code of the Russian Federation.",
+    "citation": "Sect. V, Family Code of the Russian Federation (alimony obligations)",
+    "difficulty": 1
+  },
+  {
+    "id": "fam-gift-not-joint",
+    "category": "family",
+    "type": "myth",
+    "prompt": "\"Property received by one spouse as a gift or by inheritance is that spouse's personal property.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Property received as a gift, by inheritance or by other gratuitous transactions is the property of the spouse who received it.",
+    "citation": "Art. 36, Family Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "fam-divorce-court",
+    "category": "family",
+    "type": "case",
+    "prompt": "The spouses have a common minor child and both agree to the divorce. As a general rule, where is such a marriage dissolved?",
+    "options": [
+      "In court",
+      "At the police",
+      "At a notary",
+      "At the tax inspectorate"
+    ],
+    "correctIndex": 0,
+    "explanation": "Where there are common minor children, dissolution of marriage is, as a general rule, carried out through the courts (even by mutual consent).",
+    "citation": "Art. 21, Family Code of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "adm-parking-code",
+    "category": "admin",
+    "type": "code",
+    "prompt": "A fine for improper parking. Which code establishes the liability?",
+    "options": [
+      "Administrative Offences Code (AOC RF)",
+      "Criminal Code (CrC RF)",
+      "Civil Code (CC RF)",
+      "Tax Code (TC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Traffic violations, including parking, are administrative offences under the Administrative Offences Code.",
+    "citation": "Ch. 12, Administrative Offences Code of the Russian Federation (road-traffic offences)",
+    "difficulty": 1
+  },
+  {
+    "id": "adm-hooligan-code",
+    "category": "admin",
+    "type": "code",
+    "prompt": "Foul language and pestering passers-by in a public place (petty hooliganism). Which code governs this?",
+    "options": [
+      "Administrative Offences Code (AOC RF)",
+      "Criminal Code (CrC RF)",
+      "Civil Code (CC RF)",
+      "Labour Code (LC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Petty hooliganism is an administrative offence under the Administrative Offences Code (gross hooliganism with violence/weapons is already the Criminal Code).",
+    "citation": "Art. 20.1, Administrative Offences Code of the Russian Federation (petty hooliganism)",
+    "difficulty": 2
+  },
+  {
+    "id": "adm-vs-criminal",
+    "category": "admin",
+    "type": "myth",
+    "prompt": "\"An administrative offence and a crime are the same thing.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "explanation": "No. Crimes are set out in the Criminal Code and are more socially dangerous; administrative offences are in the Administrative Offences Code. They are different kinds of liability.",
+    "citation": "Art. 14, Criminal Code of the Russian Federation; Art. 2.1, Administrative Offences Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "adm-age-16",
+    "category": "admin",
+    "type": "article",
+    "prompt": "From what age does administrative liability arise?",
+    "options": [
+      "from 14",
+      "from 16",
+      "from 18",
+      "from 21"
+    ],
+    "correctIndex": 1,
+    "explanation": "A person who has reached the age of 16 by the time the offence was committed is subject to administrative liability.",
+    "citation": "Art. 2.3, Administrative Offences Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "adm-small-theft",
+    "category": "admin",
+    "type": "case",
+    "prompt": "A person for the first time stole goods from a store of a very small value (petty stealing). Under which code will they, as a rule, be prosecuted?",
+    "options": [
+      "Administrative Offences Code (AOC RF)",
+      "Criminal Code (CrC RF)",
+      "Civil Code (CC RF)",
+      "Family Code (FC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Petty stealing (within the amount set by law) is an administrative offence under the Administrative Offences Code; larger stealing is qualified as theft under the Criminal Code.",
+    "citation": "Art. 7.27, Administrative Offences Code of the Russian Federation (petty stealing)",
+    "difficulty": 3
+  },
+  {
+    "id": "adm-drunk-driving",
+    "category": "admin",
+    "type": "code",
+    "prompt": "Driving a car while intoxicated (without consequences and without a repeat offence). Which code establishes the liability?",
+    "options": [
+      "Administrative Offences Code (AOC RF)",
+      "Civil Code (CC RF)",
+      "Tax Code (TC RF)",
+      "Family Code (FC RF)"
+    ],
+    "correctIndex": 0,
+    "explanation": "Driving while intoxicated is an administrative offence under the Administrative Offences Code; a repeat offence or one with grave consequences may become criminal.",
+    "citation": "Art. 12.8, Administrative Offences Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "tax-code",
+    "category": "tax",
+    "type": "code",
+    "prompt": "Paying personal income tax (PIT), property tax and filing a tax return. Which code governs this?",
+    "options": [
+      "Tax Code (TC RF)",
+      "Civil Code (CC RF)",
+      "Administrative Offences Code (AOC RF)",
+      "Budget Code"
+    ],
+    "correctIndex": 0,
+    "explanation": "Taxes and levies, and the rights and obligations of taxpayers, are governed by the Tax Code of the Russian Federation.",
+    "citation": "Tax Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "tax-duty-constitution",
+    "category": "tax",
+    "type": "myth",
+    "prompt": "\"The duty to pay lawfully established taxes is enshrined in the Constitution of the Russian Federation.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Everyone is obliged to pay lawfully established taxes and levies — this is a constitutional duty.",
+    "citation": "Art. 57, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "tax-ndfl-name",
+    "category": "tax",
+    "type": "case",
+    "prompt": "The tax withheld from an individual's salary is called:",
+    "options": [
+      "PIT — personal income tax",
+      "VAT — value added tax",
+      "Excise duty",
+      "Corporate profit tax"
+    ],
+    "correctIndex": 0,
+    "explanation": "Personal income tax (PIT) is paid on the income of individuals (including salary). VAT and profit tax are different taxes.",
+    "citation": "Ch. 23, Tax Code of the Russian Federation (PIT)",
+    "difficulty": 2
+  },
+  {
+    "id": "tax-no-retro",
+    "category": "tax",
+    "type": "myth",
+    "prompt": "\"As a general rule, laws that worsen the position of taxpayers do not have retroactive force.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Acts of tax legislation that establish new taxes or worsen the position of taxpayers do not have retroactive force.",
+    "citation": "Art. 5, Tax Code of the Russian Federation; Art. 57, Constitution of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "con-supreme-law",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"The Constitution of the Russian Federation has supreme legal force and direct effect.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The Constitution of the Russian Federation has supreme legal force, direct effect and applies throughout Russia; laws must not contradict it.",
+    "citation": "Art. 15, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "con-rights-from-birth",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"Fundamental human rights and freedoms belong to everyone from birth.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Fundamental human rights and freedoms are inalienable and belong to everyone from birth.",
+    "citation": "Art. 17, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "con-judicial-protection",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"Everyone is guaranteed judicial protection of their rights and freedoms.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Everyone is guaranteed judicial protection of their rights and freedoms; decisions and actions of authorities may be appealed to a court.",
+    "citation": "Art. 46, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "con-presumption-innocence",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"The accused is obliged to prove their innocence.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "explanation": "No. The accused is not obliged to prove their innocence — this follows from the presumption of innocence. The burden of proof lies with the prosecution.",
+    "citation": "Art. 49, Constitution of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "con-free-legal-aid",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"In cases provided by law, legal assistance is provided free of charge.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Everyone is guaranteed the right to qualified legal assistance; in cases provided by law it is provided free of charge.",
+    "citation": "Art. 48, Constitution of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "con-ignorance",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"Ignorance of the law exempts you from liability.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 1,
+    "explanation": "No. Ignorance of the law does not exempt from liability — this is a general legal principle. Laws are officially published for everyone to read.",
+    "citation": "Art. 15, Constitution of the Russian Federation (official publication of laws)",
+    "difficulty": 1
+  },
+  {
+    "id": "con-presumption-good-faith",
+    "category": "civil",
+    "type": "myth",
+    "prompt": "\"In civil dealings, participants are presumed to act in good faith.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The good faith of participants in civil-law relations and the reasonableness of their actions are presumed.",
+    "citation": "Art. 10, Civil Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-robbery-vs-theft",
+    "category": "criminal",
+    "type": "case",
+    "prompt": "Openly, in front of the owner, someone snatched a bag from their hands and ran off (without violence dangerous to life). How is this usually qualified?",
+    "options": [
+      "Robbery",
+      "Theft",
+      "Fraud",
+      "Embezzlement"
+    ],
+    "correctIndex": 0,
+    "explanation": "Open stealing of another's property is robbery (as opposed to secret theft). If violence dangerous to life/health is used, it is armed/violent robbery.",
+    "citation": "Art. 161, Criminal Code of the Russian Federation (robbery)",
+    "difficulty": 3
+  },
+  {
+    "id": "civ-minor-deals",
+    "category": "civil",
+    "type": "myth",
+    "prompt": "\"A 7-year-old minor may independently make small everyday transactions.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Minors aged 6 to 14 may independently make small everyday transactions and certain others expressly set out in the law.",
+    "citation": "Art. 28, Civil Code of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "lab-overtime-myth",
+    "category": "labor",
+    "type": "myth",
+    "prompt": "\"Overtime work must be paid at an increased rate.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Overtime work is paid at an increased rate (more for the first hours, even more for the following ones) or compensated with additional rest time.",
+    "citation": "Art. 152, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "fam-children-rights",
+    "category": "family",
+    "type": "myth",
+    "prompt": "\"Parents have equal rights and bear equal responsibilities towards their children.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Parental rights belong to both parents equally; they have equal rights and equal responsibilities.",
+    "citation": "Art. 61, Family Code of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "adm-presumption-innocence",
+    "category": "admin",
+    "type": "myth",
+    "prompt": "\"The presumption of innocence also applies in administrative cases.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The Administrative Offences Code enshrines the presumption of innocence: a person is presumed innocent until their guilt is proven in the established manner.",
+    "citation": "Art. 1.5, Administrative Offences Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "civ-deposit-vs-advance",
+    "category": "civil",
+    "type": "case",
+    "prompt": "The means of securing an obligation that, if the giving party backs out, stays with the other, and if the receiving party backs out, is returned at double the amount, is called:",
+    "options": [
+      "An earnest deposit (zadatok)",
+      "An advance",
+      "A penalty (liquidated damages)",
+      "A pledge"
+    ],
+    "correctIndex": 0,
+    "explanation": "This is an earnest deposit (zadatok). An advance is simply returned, whereas an earnest deposit has a securing and penalty function under the Civil Code.",
+    "citation": "Arts. 380–381, Civil Code of the Russian Federation (earnest deposit)",
+    "difficulty": 3
+  },
+  {
+    "id": "con-languages",
+    "category": "constitutional",
+    "type": "myth",
+    "prompt": "\"The state language of the Russian Federation throughout its territory is Russian.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The state language of the Russian Federation throughout its territory is Russian. Republics may establish their own state languages.",
+    "citation": "Art. 68, Constitution of the Russian Federation",
+    "difficulty": 1
+  },
+  {
+    "id": "cri-punishment-only-court",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"Only a court can find a person guilty of a crime and impose a punishment.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. A person may be found guilty of a crime and subjected to criminal punishment only by a court verdict.",
+    "citation": "Art. 49, Constitution of the Russian Federation; Art. 8, Criminal Procedure Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "lab-discrimination",
+    "category": "labor",
+    "type": "myth",
+    "prompt": "\"Discrimination in the sphere of labour is prohibited.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. It is prohibited to limit labour rights on grounds unrelated to the employee's professional qualities (sex, race, age, etc.).",
+    "citation": "Art. 3, Labour Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "civ-contract-form",
+    "category": "civil",
+    "type": "case",
+    "prompt": "As a general rule, transactions between legal entities must be made in which form?",
+    "options": [
+      "Simple written form",
+      "Oral form only",
+      "Notarised form only",
+      "Any form at will, without limits"
+    ],
+    "correctIndex": 0,
+    "explanation": "As a general rule, transactions between legal entities and with citizens are made in simple written form (a notarised form only in expressly stated cases).",
+    "citation": "Art. 161, Civil Code of the Russian Federation",
+    "difficulty": 3
+  },
+  {
+    "id": "tax-payer-rights",
+    "category": "tax",
+    "type": "myth",
+    "prompt": "\"A taxpayer has the right to appeal acts of tax authorities and the actions of their officials.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The right to appeal acts of tax authorities and the actions (inaction) of their officials is expressly vested in taxpayers.",
+    "citation": "Arts. 21, 137, Tax Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "fam-mutual-support",
+    "category": "family",
+    "type": "myth",
+    "prompt": "\"Adult, able-bodied children are obliged to support their disabled parents in need.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. Able-bodied adult children are obliged to support their disabled parents who are in need of help and to care for them.",
+    "citation": "Art. 87, Family Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "adm-fine-warning",
+    "category": "admin",
+    "type": "case",
+    "prompt": "Which of the following is an administrative penalty under the Administrative Offences Code?",
+    "options": [
+      "An administrative fine",
+      "Imprisonment",
+      "A reprimand",
+      "The death penalty"
+    ],
+    "correctIndex": 0,
+    "explanation": "An administrative fine is a type of administrative penalty. Imprisonment is a criminal punishment; a reprimand is a disciplinary sanction.",
+    "citation": "Arts. 3.2, 3.5, Administrative Offences Code of the Russian Federation",
+    "difficulty": 2
+  },
+  {
+    "id": "cri-no-crime-no-law",
+    "category": "criminal",
+    "type": "myth",
+    "prompt": "\"The criminality of an act and the punishment for it are determined only by the Criminal Code of the Russian Federation.\" True?",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correctIndex": 0,
+    "explanation": "Yes. The criminal legislation of the Russian Federation consists of the Criminal Code; new liability laws must be incorporated into it. There is no crime without a provision in the law.",
+    "citation": "Arts. 1, 3, Criminal Code of the Russian Federation",
+    "difficulty": 2
+  }
+]
