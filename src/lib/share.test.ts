@@ -3,10 +3,7 @@ import { buildShareText } from "./share";
 
 describe("buildShareText", () => {
   it("contains score, accuracy and rank", () => {
-    const text = buildShareText(
-      { total: 10, correct: 8, bestStreak: 4, score: 1234 },
-      "Attorney",
-    );
+    const text = buildShareText({ total: 10, correct: 8, bestStreak: 4, score: 1234 }, "Attorney");
     expect(text).toContain("1234");
     expect(text).toContain("8/10");
     expect(text).toContain("80%");

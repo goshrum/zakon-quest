@@ -2,8 +2,8 @@
 
 An educational quiz game about the basics of the Russian legal system. Guess the
 right code, recall the "iconic" article numbers, and tell legal myths apart from
-real norms — all with points, combos, levels and ranks (from *Newcomer* to
-*Supreme Court Justice*).
+real norms — all with points, combos, levels and ranks (from _Newcomer_ to
+_Supreme Court Justice_).
 
 A 100% static, client-side app: no backend, no paid APIs, no network requests
 during play. Free forever, hosted on GitHub Pages. The interface and all content
@@ -60,7 +60,7 @@ npm test         # unit tests (Vitest)
 ## Deploying to GitHub Pages
 
 1. Create a repository on GitHub and push the code to the `main` branch.
-2. In *Settings → Pages → Build and deployment*, choose **GitHub Actions**.
+2. In _Settings → Pages → Build and deployment_, choose **GitHub Actions**.
 3. The `.github/workflows/deploy.yml` workflow runs the tests, builds the project
    and publishes `dist/`. `base: './'` in `vite.config.ts` makes the build work
    from a Pages subdirectory.

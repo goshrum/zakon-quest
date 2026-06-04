@@ -1,0 +1,8 @@
+node_modules
+dist
+dev-dist
+coverage
+package-lock.json
+src/data/questions.json
+public
+*.png
