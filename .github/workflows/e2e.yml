@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - name: Use latest npm (lockfile compatibility)
+        run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - name: Install Playwright browser

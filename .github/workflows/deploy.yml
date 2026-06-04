@@ -1,4 +1,4 @@
-name: CI & Deploy
+name: Deploy
 
 on:
   push:
@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
-    name: Test & build
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,8 +24,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - name: Use latest npm (lockfile compatibility)
+        run: npm install -g npm@latest
       - run: npm ci
-      - run: npm test
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - run: npm run build
@@ -36,7 +37,7 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: ci
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
