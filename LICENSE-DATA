@@ -1,0 +1,27 @@
+Know the Law — Question Dataset License
+=======================================
+
+The question dataset in this repository (src/data/questions.json and the
+content of the questions it contains) is licensed under the
+
+    Creative Commons Attribution 4.0 International License (CC BY 4.0)
+
+You are free to share and adapt the dataset for any purpose, even commercially,
+as long as you give appropriate credit, provide a link to the license, and
+indicate if changes were made.
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Attribution example:
+    "Know the Law" question dataset by goshrum, licensed under CC BY 4.0,
+    https://github.com/goshrum/zakon-quest
+
+NOTE ON ACCURACY: The dataset is provided for educational purposes only and is
+not legal advice. Legal norms change over time; every question cites its source
+so it can be independently verified. See docs/CONTENT_POLICY.md.
+
+---------------------------------------------------------------------------
+
+The application SOURCE CODE is licensed separately under the MIT License — see
+the LICENSE file.

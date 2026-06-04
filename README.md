@@ -1,121 +1,169 @@
 # 📜 Know the Law
 
-An educational quiz game about the basics of the Russian legal system. Guess the
-right code, recall the "iconic" article numbers, and tell legal myths apart from
-real norms — all with points, combos, levels and ranks (from _Newcomer_ to
-_Supreme Court Justice_).
+> An open, schema-validated dataset of legal-literacy questions **and** a
+> privacy-first quiz game that runs entirely in your browser — no server, no
+> accounts, no tracking, works offline.
 
-A 100% static, client-side app: no backend, no paid APIs, no network requests
-during play. Free forever, hosted on GitHub Pages. The interface and all content
-are in English; the subject matter is the Russian legal system, and every
-question carries a legal citation so you can verify it yourself.
+[![CI](https://github.com/goshrum/zakon-quest/actions/workflows/ci.yml/badge.svg)](https://github.com/goshrum/zakon-quest/actions/workflows/ci.yml)
+[![E2E](https://github.com/goshrum/zakon-quest/actions/workflows/e2e.yml/badge.svg)](https://github.com/goshrum/zakon-quest/actions/workflows/e2e.yml)
+[![CodeQL](https://github.com/goshrum/zakon-quest/actions/workflows/codeql.yml/badge.svg)](https://github.com/goshrum/zakon-quest/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+[![Dataset: CC BY 4.0](https://img.shields.io/badge/dataset-CC%20BY%204.0-lightgrey.svg)](LICENSE-DATA)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Conventional Commits](https://img.shields.io/badge/commits-conventional-fe5196.svg)](https://www.conventionalcommits.org)
+[![Code style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](tsconfig.json)
+[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8.svg)](#-install--offline)
 
-## ⚠️ Accuracy disclaimer
+**▶ Live demo: <https://goshrum.github.io/zakon-quest/>**
 
-This is an **educational game, not legal advice**. The content is limited to
-stable, well-known norms that rarely change. Even so, legislation changes —
-**always verify against the current edition** at
-[pravo.gov.ru](http://pravo.gov.ru) or in ConsultantPlus.
+---
 
-Content accuracy policy:
+## Table of contents
 
-- Only facts we are highly confident are correct and stable are included.
-- Where the exact article number is not absolutely reliable, the question is
-  phrased about the **code/branch** ("which code governs…") rather than the exact
-  number.
-- **Every** question carries a `citation` field (for example,
-  `Art. 158, Criminal Code of the Russian Federation`), shown after the answer
-  for self-checking.
-- Fewer rock-solid questions are preferred over many debatable ones.
+- [Why this project](#why-this-project)
+- [Features](#features)
+- [The open dataset](#-the-open-dataset)
+- [Quick start](#-quick-start)
+- [Install & offline](#-install--offline)
+- [Project scripts](#project-scripts)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
+- [Governance & maintainers](#governance--maintainers)
+- [Security](#security)
+- [Roadmap](#roadmap)
+- [License](#license)
+
+## Why this project
+
+Legal-literacy material is scarce, fragmented, and rarely available as **open,
+machine-readable, citable data**. Know the Law tackles both halves of that
+problem:
+
+1. **An open dataset** of legal-literacy questions — every entry carries a
+   citation to a verifiable, stable source, validated by a JSON Schema in CI, and
+   published under CC BY 4.0 so anyone can reuse it.
+2. **A delightful way to learn it** — a fast, accessible, offline-capable quiz
+   game that turns the dataset into practice, with scoring, streaks, levels,
+   spaced repetition, and a study/browse mode.
+
+The quiz engine is deliberately **jurisdiction-agnostic**: the current dataset
+covers the Russian legal system (in English), and the project is structured so
+contributors can add other jurisdictions as separate datasets. See
+[`docs/adding-a-jurisdiction.md`](docs/adding-a-jurisdiction.md).
+
+> ⚖️ **Educational only — not legal advice.** Norms change over time; every
+> question cites its source so you can verify it. See
+> [`docs/CONTENT_POLICY.md`](docs/CONTENT_POLICY.md).
 
 ## Features
 
-- 4 question types: "Which code?", "Guess the article", "True / False", and
-  "Case".
-- 7 branches of law: civil, criminal, labour, family, administrative, tax and
-  constitutional — selectable before a round.
-- Points with a combo multiplier for streaks and a speed bonus (optional timer).
-- XP, levels and fun legal ranks, with a progress bar.
-- Spaced repetition: questions you got wrong come back sooner, mastered ones less
-  often. Progress is stored in `localStorage`.
-- "Review your mistakes" mode that replays only the questions you previously
-  missed.
-- After every answer — an explanation of "why this norm" plus a citation.
-- Keyboard shortcuts: press 1–4 to answer, Enter to continue.
-- An optional sound toggle for correct/wrong feedback, persisted.
-- Results screen with "share your result" (copies text, no network).
-- A juicy, responsive UI: animations, combo flashes, dark/light theme, mobile
-  layout, and `prefers-reduced-motion` support.
+- 🎯 **Four question types** — pick the governing code, guess the article,
+  true/false legal myths, and short case scenarios.
+- 🔥 **Game feel** — combo multipliers, optional timer + speed bonus, XP, ranks,
+  and a results screen.
+- 🧠 **Spaced repetition** — questions you miss come back; a dedicated
+  _review your mistakes_ mode.
+- 📚 **Study mode** — searchable, pressure-free browse of every question with its
+  answer, explanation, and citation.
+- 📊 **Lifetime stats** — accuracy overall and per legal branch.
+- ♿ **Accessible** — keyboard support, focus management, ARIA live regions,
+  reduced-motion support, skip link.
+- 🔒 **Private & offline** — 100% client-side, installable PWA, progress stored
+  only in your browser.
 
-## Running
+## 📦 The open dataset
+
+The question bank is a first-class artifact, not hard-coded strings:
+
+- Canonical data: [`src/data/questions.json`](src/data/questions.json)
+- Contract: [`src/data/questions.schema.json`](src/data/questions.schema.json)
+  (JSON Schema, draft 2020-12)
+- Docs: [`docs/data-schema.md`](docs/data-schema.md)
+- License: **CC BY 4.0** — [`LICENSE-DATA`](LICENSE-DATA)
+
+Validate it anytime:
 
 ```bash
+npm run validate:data
+```
+
+Reuse it in your own project, cite it (see [`CITATION.cff`](CITATION.cff)), and
+contribute corrections — citation-backed fixes are fast-tracked.
+
+## 🚀 Quick start
+
+Requires Node 18, 20, or 22 (see [`.nvmrc`](.nvmrc)).
+
+```bash
+git clone https://github.com/goshrum/zakon-quest.git
+cd zakon-quest
 npm install
-npm run dev      # local development (Vite)
-npm run build    # tsc --noEmit + build into dist/
-npm run preview  # preview the built version
-npm test         # unit tests (Vitest)
+npm run dev        # start the dev server
 ```
 
-## Deploying to GitHub Pages
+Build and preview a production bundle:
 
-1. Create a repository on GitHub and push the code to the `main` branch.
-2. In _Settings → Pages → Build and deployment_, choose **GitHub Actions**.
-3. The `.github/workflows/deploy.yml` workflow runs the tests, builds the project
-   and publishes `dist/`. `base: './'` in `vite.config.ts` makes the build work
-   from a Pages subdirectory.
-
-## Adding your own questions
-
-Questions live in `src/data/questions.ts` (the `QUESTIONS` array). The schema is
-described in `src/data/types.ts`. Each object:
-
-```ts
-{
-  id: "unique-stable-id",            // string, used for progress in localStorage
-  category: "civil",                  // civil | criminal | labor | family | admin | tax | constitutional
-  type: "code",                       // code | article | myth | case
-  prompt: "Text of the question/situation",
-  options: ["Option A", "Option B"], // for type "myth" strictly ["True", "False"]
-  correctIndex: 0,                    // index of the correct option in options
-  explanation: "Why this norm (shown after the answer)",
-  citation: "Art. 454, Civil Code of the Russian Federation", // verification reference — required
-  difficulty: 1                       // 1 | 2 | 3
-}
+```bash
+npm run build
+npm run preview
 ```
 
-The data-integrity test (`src/data/questions.test.ts`) automatically checks every
-object: a valid `correctIndex` within `options`, non-empty `citation` and
-`explanation`, correct `category`/`type`, unique `id`s and options, and that no
-field contains Cyrillic characters. Add an invalid question and `npm test` fails.
-This protects the structure and accuracy of the content.
+## 📲 Install & offline
+
+The app is a Progressive Web App. Open the live demo and use your browser's
+**Install** action to add it to your device. Once loaded, it works fully offline
+— the service worker precaches the app shell, and there are no network calls at
+runtime.
+
+## Project scripts
+
+| Script                  | What it does                            |
+| ----------------------- | --------------------------------------- |
+| `npm run dev`           | Start the Vite dev server               |
+| `npm run build`         | Type-check and build for production     |
+| `npm run preview`       | Preview the production build            |
+| `npm test`              | Run unit tests (Vitest)                 |
+| `npm run test:coverage` | Unit tests with coverage thresholds     |
+| `npm run e2e`           | End-to-end tests (Playwright)           |
+| `npm run lint`          | ESLint                                  |
+| `npm run format`        | Format with Prettier                    |
+| `npm run typecheck`     | TypeScript, no emit                     |
+| `npm run validate:data` | Validate the dataset against the schema |
 
 ## Architecture
 
-- `src/data/` — data and schema (questions, types, categories).
-- `src/lib/` — **pure functions** for game logic, covered by tests:
-  - `scoring.ts` — points, combo multiplier, time bonus, accuracy.
-  - `levels.ts` — XP thresholds, ranks, level progress.
-  - `srs.ts` — the spaced-repetition queue.
-  - `answer.ts` — answer checking, category filtering, deterministic shuffle.
-  - `share.ts` — the "share" text.
-  - `storage.ts` — a thin wrapper over `localStorage` (the only I/O).
-- `src/main.ts` — UI and wiring (screen rendering, timer, animations, keyboard,
-  sound).
+A pure, unit-tested core (`src/lib`) with a thin DOM shell (`src/main.ts`) over
+an open dataset (`src/data`). Full write-up in
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md); decisions are recorded as ADRs in
+[`docs/adr/`](docs/adr/).
 
-## Limitations (honestly)
+## Contributing
 
-- The content is deliberately basic: well-known principles and "iconic" articles.
-  It does **not** cover editorial nuances, regional law, case law, or threshold
-  amounts (which change).
-- Article numbers and thresholds may change over time — the `citation` is given
-  precisely so you can re-check against the current edition.
-- Progress is stored only in the current browser's `localStorage`: clearing data
-  or using another browser/device means starting over. There is no cross-device
-  sync (a deliberate zero-cost / no-backend choice).
-- This is a game, not a reference system and not a substitute for advice from a
-  lawyer.
+Contributions of all kinds are welcome — code, accessibility, docs, and
+especially **citation-backed question fixes and additions**. Start with
+[`CONTRIBUTING.md`](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). We use
+[Conventional Commits](https://www.conventionalcommits.org) and automate releases
+with [release-please](https://github.com/googleapis/release-please).
+
+## Governance & maintainers
+
+This project has documented [governance](GOVERNANCE.md) and a
+[maintainers](MAINTAINERS.md) list describing roles, decision-making, releases,
+and how to become a maintainer.
+
+## Security
+
+Found a vulnerability? Please report it privately — see
+[`SECURITY.md`](SECURITY.md). Dependencies are monitored with Dependabot and the
+code is scanned with CodeQL.
+
+## Roadmap
+
+See [`ROADMAP.md`](ROADMAP.md) for what's planned and where help is most useful.
 
 ## License
 
-MIT © 2026 georgerum07
+- **Code:** [MIT](LICENSE)
+- **Question dataset:** [CC BY 4.0](LICENSE-DATA)
