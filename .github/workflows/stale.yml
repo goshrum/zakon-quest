@@ -1,0 +1,33 @@
+name: Stale triage
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 45
+          days-before-close: 14
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: "pinned,security,roadmap,good first issue,help wanted"
+          exempt-pr-labels: "pinned,security"
+          stale-issue-message: >-
+            This issue has been inactive for 45 days and is now marked stale.
+            Remove the stale label or comment to keep it open; otherwise it will
+            be closed in 14 days.
+          stale-pr-message: >-
+            This pull request has been inactive for 45 days and is now marked
+            stale. Please update it to keep it open.
+          close-issue-message: >-
+            Closing as stale. Feel free to reopen if this is still relevant.
