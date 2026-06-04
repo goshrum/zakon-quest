@@ -15,6 +15,16 @@ based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Stats / Profile screen**: a dedicated screen, reachable from the start
+  screen via a "Stats" button (with a back button), showing lifetime progress —
+  total questions answered, overall accuracy, best streak ever, current rank/XP,
+  and a per-category accuracy breakdown (correct/total and a progress bar for
+  each legal category). Lifetime stats are persisted in `localStorage` alongside
+  existing progress and updated after every answer. Older saves are migrated
+  gracefully: missing fields default to zero and the legacy top-level totals
+  seed the new lifetime stats. Aggregation lives in pure functions in
+  `src/lib/stats.ts` (`updateStats`, `computeAccuracyByCategory`,
+  `migrateStats`, `overallAccuracy`) with full unit-test coverage.
 - **Review your mistakes** mode: replays only the questions you previously got
   wrong, using the existing spaced-repetition data. Surfaced on the start screen
   with a live count of outstanding mistakes.
