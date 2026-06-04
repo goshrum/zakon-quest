@@ -21,6 +21,7 @@ import {
 import { loadProgress, saveProgress, resetProgress, type Progress } from "./lib/storage";
 import { buildShareText } from "./lib/share";
 import { updateStats, overallAccuracy, computeAccuracyByCategory } from "./lib/stats";
+import { filterQuestions } from "./lib/study";
 
 const QUESTIONS_PER_ROUND = 10;
 const TIMER_MS = 25_000;
@@ -155,7 +156,7 @@ function renderMenu(selected: Set<Category> = new Set()): void {
         <input type="checkbox" id="sound" ${soundEnabled ? "checked" : ""} /> Sound effects
       </label>
       <div style="height:14px"></div>
-      <button class="btn" id="start">▶ Play (${QUESTIONS_PER_ROUND} questions)</button>
+      <button class="btn" id="start" data-testid="start-quiz">▶ Play (${QUESTIONS_PER_ROUND} questions)</button>
       ${
         mistakeCount > 0
           ? `<div style="height:10px"></div><button class="btn secondary" id="review">🔁 Review your mistakes (${mistakeCount})</button>`
@@ -163,6 +164,8 @@ function renderMenu(selected: Set<Category> = new Set()): void {
       }
       <div style="height:10px"></div>
       <button class="btn secondary" id="stats">📊 Stats</button>
+      <div style="height:10px"></div>
+      <button class="btn secondary" id="study" data-testid="open-study">📚 Study (browse all questions)</button>
       <div style="height:10px"></div>
       <button class="btn ghost" id="reset">Reset progress</button>
       <p class="chip-hint" style="margin-top:12px">Keyboard: press 1–4 to answer, Enter to continue.</p>
@@ -209,6 +212,8 @@ function renderMenu(selected: Set<Category> = new Set()): void {
   }
 
   app.querySelector("#stats")!.addEventListener("click", () => renderStats());
+
+  app.querySelector("#study")!.addEventListener("click", () => renderStudy());
 
   app.querySelector("#reset")!.addEventListener("click", () => {
     if (confirm("Reset all progress, XP and mastered questions?")) {
@@ -280,6 +285,90 @@ function renderStats(): void {
   `;
 
   app.querySelector("#back")!.addEventListener("click", () => renderMenu());
+}
+
+// ===================== Study / Browse screen =====================
+
+function renderStudy(): void {
+  stopTimer();
+  round = null;
+
+  const total = QUESTIONS.length;
+  const catOptions = (Object.keys(CATEGORIES) as Category[])
+    .map((c) => `<option value="${c}">${escapeHtml(CATEGORIES[c].title)}</option>`)
+    .join("");
+
+  app.innerHTML = `
+    <h1 class="title">📚 Study</h1>
+    <p class="subtitle">Browse every question with its correct answer, explanation and citation — no timer, no scoring.</p>
+
+    <div class="card">
+      <input
+        type="search"
+        id="study-search"
+        class="study-search"
+        data-testid="study-search"
+        placeholder="Search prompt, explanation, citation, category…"
+        autocomplete="off"
+      />
+      <div class="study-controls">
+        <label class="chip-hint" style="display:flex;gap:8px;align-items:center;margin:0">
+          Category:
+          <select id="study-cat" class="study-cat">
+            <option value="">All</option>
+            ${catOptions}
+          </select>
+        </label>
+        <span class="study-count chip-hint" id="study-count" style="margin:0;margin-left:auto"></span>
+      </div>
+    </div>
+
+    <div id="study-list" data-testid="study-list"></div>
+
+    <div style="height:10px"></div>
+    <button class="btn ghost" id="study-back" data-testid="study-back">← Back</button>
+  `;
+
+  const searchEl = app.querySelector("#study-search") as HTMLInputElement;
+  const catEl = app.querySelector("#study-cat") as HTMLSelectElement;
+  const listEl = app.querySelector("#study-list") as HTMLElement;
+  const countEl = app.querySelector("#study-count") as HTMLElement;
+
+  function update(): void {
+    const cat = (catEl.value || null) as Category | null;
+    const results = filterQuestions(QUESTIONS, searchEl.value, cat);
+    countEl.textContent = `Showing ${results.length} of ${total}`;
+
+    if (results.length === 0) {
+      listEl.innerHTML = `<div class="card"><p class="chip-hint" style="margin:0">No questions match your search.</p></div>`;
+      return;
+    }
+
+    listEl.innerHTML = results
+      .map((q) => {
+        const meta = CATEGORIES[q.category];
+        const correct = q.options[q.correctIndex];
+        return `
+        <div class="card study-item" data-testid="study-item">
+          <div class="q-meta">
+            <span class="tag">${meta.emoji} ${escapeHtml(meta.title)}</span>
+            <span class="tag">${escapeHtml(QUESTION_TYPES[q.type].title)}</span>
+          </div>
+          <div class="prompt">${escapeHtml(q.prompt)}</div>
+          <div class="study-answer">✅ <b>Correct answer:</b> ${escapeHtml(correct)}</div>
+          <div class="explanation">${escapeHtml(q.explanation)}</div>
+          <div class="citation">📖 ${escapeHtml(q.citation)}</div>
+        </div>`;
+      })
+      .join("");
+  }
+
+  searchEl.addEventListener("input", update);
+  catEl.addEventListener("change", update);
+  app.querySelector("#study-back")!.addEventListener("click", () => renderMenu());
+
+  update();
+  searchEl.focus();
 }
 
 function startRound(selectedCats: Set<Category>, useTimer: boolean): void {

@@ -563,6 +563,58 @@ footer a {
   transform: translateX(-50%) translateY(0);
 }
 
+/* Study / Browse screen */
+.study-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--bg-soft);
+  background: var(--bg-soft);
+  color: inherit;
+  font-family: inherit;
+}
+
+.study-search:focus {
+  outline: none;
+  border-color: var(--accent, #6c8cff);
+}
+
+.study-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.study-cat {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--bg-soft);
+  background: var(--bg-soft);
+  color: inherit;
+}
+
+.study-item .study-answer {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.study-item .explanation {
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.study-item .citation {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

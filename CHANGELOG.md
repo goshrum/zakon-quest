@@ -15,6 +15,16 @@ based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
+- **Study / Browse mode**: a searchable, pressure-free reference screen reachable
+  from the start screen via a "Study" button (with a back button). It lists every
+  question showing the prompt, the clearly marked correct answer, the explanation,
+  the citation and the category. A live search box filters the list
+  case-insensitively across the prompt, explanation, citation and category, with an
+  optional single-category filter and a "Showing X of Y" result count. Filtering is
+  a pure function in `src/lib/study.ts` (`filterQuestions`) with full unit-test
+  coverage. Added stable `data-testid` attributes to key interactive elements for
+  end-to-end testing: `start-quiz`, `open-study`, `study-search`, `study-list`,
+  `study-item`, `study-back`.
 - **Stats / Profile screen**: a dedicated screen, reachable from the start
   screen via a "Stats" button (with a back button), showing lifetime progress —
   total questions answered, overall accuracy, best streak ever, current rank/XP,
