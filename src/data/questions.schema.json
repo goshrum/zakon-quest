@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/goshrum/zakon-quest/src/data/questions.schema.json",
+  "title": "Know the Law question bank",
+  "description": "Open dataset of educational quiz questions about the Russian legal system. Each entry is a single multiple-choice question with a citation to the underlying legal norm.",
+  "type": "array",
+  "minItems": 1,
+  "items": { "$ref": "#/$defs/question" },
+  "$defs": {
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "type",
+        "prompt",
+        "options",
+        "correctIndex",
+        "explanation",
+        "citation",
+        "difficulty"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique stable identifier (used for progress in localStorage).",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "category": {
+          "type": "string",
+          "description": "Branch of law.",
+          "enum": ["civil", "criminal", "labor", "family", "admin", "tax", "constitutional"]
+        },
+        "type": {
+          "type": "string",
+          "description": "Kind of game question.",
+          "enum": ["code", "article", "myth", "case"]
+        },
+        "prompt": {
+          "type": "string",
+          "description": "Text of the question or situation.",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "description": "Answer options. For 'myth' questions this is exactly [\"True\", \"False\"].",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "correctIndex": {
+          "type": "integer",
+          "description": "Zero-based index of the correct option within 'options'.",
+          "minimum": 0
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Why this norm applies — shown after the answer.",
+          "minLength": 1
+        },
+        "citation": {
+          "type": "string",
+          "description": "Reference to the norm for verification.",
+          "minLength": 1
+        },
+        "difficulty": {
+          "type": "integer",
+          "description": "Relative difficulty: 1 (easy) to 3 (hard).",
+          "enum": [1, 2, 3]
+        }
+      }
+    }
+  }
+}
