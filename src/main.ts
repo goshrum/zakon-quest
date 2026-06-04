@@ -1,11 +1,6 @@
 import "./styles/main.css";
 import { QUESTIONS } from "./data/questions";
-import {
-  CATEGORIES,
-  QUESTION_TYPES,
-  type Category,
-  type Question,
-} from "./data/types";
+import { CATEGORIES, QUESTION_TYPES, type Category, type Question } from "./data/types";
 import { isCorrect, filterByCategories, seededShuffle } from "./lib/answer";
 import { scoreAnswer, comboMultiplier, accuracyPercent, type RoundStats } from "./lib/scoring";
 import { levelForXp, nextLevel, levelProgress } from "./lib/levels";
@@ -28,6 +23,33 @@ const TIMER_MS = 25_000;
 
 const app = document.getElementById("app")!;
 let progress: Progress = loadProgress();
+
+// ------- Accessibility helpers -------
+
+/** Announce a message to assistive tech via the polite live region. */
+function announce(msg: string): void {
+  const el = document.getElementById("sr-status");
+  if (!el) return;
+  // Clearing first guarantees re-announcement of identical consecutive text.
+  el.textContent = "";
+  requestAnimationFrame(() => {
+    el.textContent = msg;
+  });
+}
+
+/**
+ * Move keyboard focus to a screen's heading after a screen switch so screen
+ * reader and keyboard users land on the new content instead of being stranded.
+ */
+function focusHeading(): void {
+  const h = app.querySelector("h1, h2, h3") as HTMLElement | null;
+  if (h) {
+    h.setAttribute("tabindex", "-1");
+    h.focus();
+  } else {
+    app.focus();
+  }
+}
 
 // ------- Sound (correct/wrong feedback), persisted in localStorage. -------
 const SOUND_KEY = "zakon-quest:sound:v1";
@@ -221,8 +243,11 @@ function renderMenu(selected: Set<Category> = new Set()): void {
       progress = loadProgress();
       renderMenu();
       toast("Progress reset");
+      announce("Progress reset");
     }
   });
+
+  focusHeading();
 }
 
 // ===================== Stats / Profile screen =====================
@@ -285,6 +310,8 @@ function renderStats(): void {
   `;
 
   app.querySelector("#back")!.addEventListener("click", () => renderMenu());
+
+  focusHeading();
 }
 
 // ===================== Study / Browse screen =====================
@@ -309,17 +336,24 @@ function renderStudy(): void {
         class="study-search"
         data-testid="study-search"
         placeholder="Search prompt, explanation, citation, category…"
+        aria-label="Search questions"
         autocomplete="off"
       />
       <div class="study-controls">
-        <label class="chip-hint" style="display:flex;gap:8px;align-items:center;margin:0">
+        <label class="chip-hint" for="study-cat" style="display:flex;gap:8px;align-items:center;margin:0">
           Category:
-          <select id="study-cat" class="study-cat">
+          <select id="study-cat" class="study-cat" aria-label="Filter by category">
             <option value="">All</option>
             ${catOptions}
           </select>
         </label>
-        <span class="study-count chip-hint" id="study-count" style="margin:0;margin-left:auto"></span>
+        <span
+          class="study-count chip-hint"
+          id="study-count"
+          role="status"
+          aria-live="polite"
+          style="margin:0;margin-left:auto"
+        ></span>
       </div>
     </div>
 
@@ -418,12 +452,7 @@ function startReview(useTimer: boolean): void {
   beginRound(ordered, new Set<Category>(), useTimer, true);
 }
 
-function beginRound(
-  queue: Question[],
-  selectedCats: Set<Category>,
-  useTimer: boolean,
-  isReview: boolean,
-): void {
+function beginRound(queue: Question[], selectedCats: Set<Category>, useTimer: boolean, isReview: boolean): void {
   round = {
     queue,
     index: 0,
@@ -464,27 +493,42 @@ function renderQuestion(): void {
         <span class="tag">${CATEGORIES[q.category].emoji} ${CATEGORIES[q.category].title}</span>
         <span class="tag">${QUESTION_TYPES[q.type].title}</span>
         ${round.isReview ? `<span class="tag">🔁 Review</span>` : ""}
-        <span class="q-progress">${round.index + 1} / ${round.queue.length}</span>
-        ${round.useTimer ? `<span class="timer" id="timer">${(TIMER_MS / 1000) | 0}s</span>` : ""}
+        <span class="q-progress">Question ${round.index + 1} of ${round.queue.length}</span>
+        ${
+          round.useTimer
+            ? `<span class="timer" id="timer" role="timer" aria-label="Time remaining">${(TIMER_MS / 1000) | 0}s</span>`
+            : ""
+        }
       </div>
-      <div class="prompt">${escapeHtml(q.prompt)}</div>
-      <div class="options" id="options"></div>
+      <h2 class="prompt" id="prompt">${escapeHtml(q.prompt)}</h2>
+      <div class="options" id="options" role="group" aria-labelledby="prompt"></div>
       <div id="fb"></div>
       <div id="cont"></div>
     </div>
-    <button class="btn ghost" id="quit">End round</button>
+    <button class="btn ghost" id="quit" aria-label="End the current round">End round</button>
   `;
 
   const optionsEl = app.querySelector("#options")!;
   q.options.forEach((opt, i) => {
     const btn = document.createElement("button");
     btn.className = "option";
-    btn.innerHTML = `<span class="key">${String.fromCharCode(65 + i)}</span><span>${escapeHtml(opt)}</span>`;
+    btn.setAttribute("aria-label", `Answer ${i + 1}: ${opt}`);
+    btn.innerHTML = `<span class="key" aria-hidden="true">${String.fromCharCode(65 + i)}</span><span>${escapeHtml(
+      opt,
+    )}</span>`;
     btn.addEventListener("click", () => answer(q, i));
     optionsEl.appendChild(btn);
   });
 
   app.querySelector("#quit")!.addEventListener("click", () => renderResults());
+
+  // Move focus to the question so screen-reader users land on the new prompt.
+  const promptEl = app.querySelector("#prompt") as HTMLElement | null;
+  if (promptEl) {
+    promptEl.setAttribute("tabindex", "-1");
+    promptEl.focus();
+  }
+  announce(`Question ${round.index + 1} of ${round.queue.length}. ${q.prompt}`);
 
   if (round.useTimer) startTimer(q);
 }
@@ -576,16 +620,19 @@ function answer(q: Question, selectedIndex: number): void {
   // Feedback with an explanation and a citation.
   const fb = app.querySelector("#fb")!;
   const timedOut = selectedIndex === -1;
+  const verdict = correct ? "✅ Correct!" : timedOut ? "⏰ Time's up" : "❌ Not quite";
   fb.innerHTML = `
     <div class="feedback ${correct ? "good" : "bad"}">
       ${gained > 0 ? `<span class="points">+${gained}</span>` : ""}
-      <div class="verdict">${
-        correct ? "✅ Correct!" : timedOut ? "⏰ Time's up" : "❌ Not quite"
-      }</div>
+      <div class="verdict">${verdict}</div>
       <div class="explanation">${escapeHtml(q.explanation)}</div>
       <div class="citation">📖 ${escapeHtml(q.citation)}</div>
     </div>
   `;
+
+  // Announce the result, score and explanation to assistive tech.
+  const verdictText = correct ? "Correct" : timedOut ? "Time's up" : "Not quite";
+  announce(`${verdictText}. ${correct ? `Plus ${gained} points. ` : ""}${q.explanation} Source: ${q.citation}`);
 
   const cont = app.querySelector("#cont")!;
   cont.innerHTML = `<div style="height:14px"></div><button class="btn" id="next">${
@@ -614,7 +661,13 @@ function renderResults(): void {
   const progPct = Math.round(levelProgress(progress.xp) * 100);
 
   const grade =
-    acc >= 90 ? "Brilliant! 🏆" : acc >= 70 ? "Great result! 👏" : acc >= 50 ? "Not bad, keep going! 💪" : "Room to grow 📚";
+    acc >= 90
+      ? "Brilliant! 🏆"
+      : acc >= 70
+        ? "Great result! 👏"
+        : acc >= 50
+          ? "Not bad, keep going! 💪"
+          : "Room to grow 📚";
 
   const wasReview = round.isReview;
 
@@ -664,11 +717,17 @@ function renderResults(): void {
     try {
       await navigator.clipboard.writeText(text);
       toast("Result copied to clipboard");
+      announce("Result copied to clipboard");
     } catch {
       // No-network fallback: show the text for manual copying.
       prompt("Copy your result:", text);
     }
   });
+
+  focusHeading();
+  announce(
+    `Round complete. Score ${stats.score}, accuracy ${acc} percent, ${stats.correct} of ${stats.total} correct.`,
+  );
 }
 
 // ===================== UI utilities =====================
@@ -696,11 +755,7 @@ function toast(msg: string): void {
 }
 
 function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 // ===================== Keyboard shortcuts =====================

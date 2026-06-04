@@ -33,6 +33,66 @@
   box-sizing: border-box;
 }
 
+/* ---- Accessibility ---- */
+
+/* Visually hidden, but available to screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-to-content link: off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Clear, consistent keyboard focus ring on all interactive controls. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Programmatic focus on headings/app (focus management) shows no text outline,
+   unless the user is actually keyboard-navigating. */
+h1[tabindex]:focus,
+h2[tabindex]:focus,
+h3[tabindex]:focus,
+#app:focus {
+  outline: none;
+}
+
+h1[tabindex]:focus-visible,
+h2[tabindex]:focus-visible,
+h3[tabindex]:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
 html,
 body {
   margin: 0;
@@ -41,9 +101,9 @@ body {
 
 body {
   font-family: var(--font);
-  background: radial-gradient(1200px 600px at 80% -10%, rgba(160, 107, 255, 0.18), transparent 60%),
-    radial-gradient(1000px 500px at -10% 110%, rgba(108, 140, 255, 0.18), transparent 60%),
-    var(--bg);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(160, 107, 255, 0.18), transparent 60%),
+    radial-gradient(1000px 500px at -10% 110%, rgba(108, 140, 255, 0.18), transparent 60%), var(--bg);
   color: var(--text);
   min-height: 100vh;
   min-height: 100dvh;
@@ -171,7 +231,9 @@ button {
   padding: 14px 20px;
   border-radius: 14px;
   width: 100%;
-  transition: transform 0.12s ease, filter 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease;
 }
 
 .btn:hover {
@@ -287,7 +349,10 @@ button {
   font-size: 1.02rem;
   font-weight: 600;
   line-height: 1.3;
-  transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+  transition:
+    transform 0.1s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
   display: flex;
   gap: 12px;
   align-items: center;
@@ -620,6 +685,19 @@ footer a {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
+
+  /* Suppress purely decorative motion entirely. */
+  .combo-flash,
+  .shake {
+    animation: none !important;
+  }
+}
+
+/* The question heading reuses the prompt styling, not default heading sizing. */
+h2.prompt {
+  font-size: 1.2rem;
 }
