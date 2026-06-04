@@ -3,6 +3,15 @@
 All notable changes to this project are documented here. The format is loosely
 based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0](https://github.com/goshrum/zakon-quest/compare/v1.0.0...v1.1.0) (2026-06-04)
+
+
+### Features
+
+* accessibility pass — skip link, landmarks, focus and live regions ([aaffeed](https://github.com/goshrum/zakon-quest/commit/aaffeed556ef7950bfcad97d2ad5b99465d0fa9a))
+* add PWA support with offline caching and installable icons ([58f0ee8](https://github.com/goshrum/zakon-quest/commit/58f0ee818b342b3d78ade84700d6ff368ca5f159))
+* make question bank a first-class, schema-validated open dataset ([9cfcbea](https://github.com/goshrum/zakon-quest/commit/9cfcbeae94afb53de875adcee276057e53a64ee8))
+
 ## [Unreleased]
 
 ### Changed
