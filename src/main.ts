@@ -512,6 +512,7 @@ function renderQuestion(): void {
   q.options.forEach((opt, i) => {
     const btn = document.createElement("button");
     btn.className = "option";
+    btn.setAttribute("data-testid", `answer-${i}`);
     btn.setAttribute("aria-label", `Answer ${i + 1}: ${opt}`);
     btn.innerHTML = `<span class="key" aria-hidden="true">${String.fromCharCode(65 + i)}</span><span>${escapeHtml(
       opt,
