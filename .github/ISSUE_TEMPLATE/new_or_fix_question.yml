@@ -1,0 +1,47 @@
+name: Question correction or addition
+description: Report a wrong/outdated question or propose a new one. Citations required.
+labels: ["content", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accuracy is the heart of this project. Every question must cite a stable,
+        verifiable legal source. See our
+        [Content Policy](https://github.com/goshrum/zakon-quest/blob/main/docs/CONTENT_POLICY.md).
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - Correction to an existing question
+        - New question proposal
+    validations:
+      required: true
+  - type: input
+    id: question-id
+    attributes:
+      label: Question id (for corrections)
+      description: The `id` field from the dataset, if applicable.
+    validations:
+      required: false
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What is wrong, or what is the proposed question, options, and correct answer?
+    validations:
+      required: true
+  - type: input
+    id: citation
+    attributes:
+      label: Citation
+      placeholder: "e.g. Art. 158, Criminal Code of the Russian Federation"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: An authoritative source (e.g. pravo.gov.ru) confirming the fact.
+    validations:
+      required: true

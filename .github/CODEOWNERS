@@ -1,0 +1,11 @@
+# Code ownership for review routing.
+# These owners are requested for review automatically on matching paths.
+
+*                       @goshrum
+
+# The legal content is the most sensitive part of the project.
+/src/data/              @goshrum
+/docs/CONTENT_POLICY.md @goshrum
+
+# Release & CI configuration
+/.github/               @goshrum
