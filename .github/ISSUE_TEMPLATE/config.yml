@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/goshrum/zakon-quest/discussions
+    about: Ask questions and share ideas with the community.
+  - name: Security report
+    url: https://github.com/goshrum/zakon-quest/security/advisories/new
+    about: Privately report a security vulnerability (do not open a public issue).
