@@ -6,3 +6,5 @@ package-lock.json
 src/data/questions.json
 public
 *.png
+CHANGELOG.md
+.release-please-manifest.json
