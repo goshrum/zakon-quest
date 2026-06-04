@@ -20,6 +20,7 @@ import {
 } from "./lib/srs";
 import { loadProgress, saveProgress, resetProgress, type Progress } from "./lib/storage";
 import { buildShareText } from "./lib/share";
+import { updateStats, overallAccuracy, computeAccuracyByCategory } from "./lib/stats";
 
 const QUESTIONS_PER_ROUND = 10;
 const TIMER_MS = 25_000;
@@ -161,6 +162,8 @@ function renderMenu(selected: Set<Category> = new Set()): void {
           : ""
       }
       <div style="height:10px"></div>
+      <button class="btn secondary" id="stats">📊 Stats</button>
+      <div style="height:10px"></div>
       <button class="btn ghost" id="reset">Reset progress</button>
       <p class="chip-hint" style="margin-top:12px">Keyboard: press 1–4 to answer, Enter to continue.</p>
     </div>
@@ -205,6 +208,8 @@ function renderMenu(selected: Set<Category> = new Set()): void {
     });
   }
 
+  app.querySelector("#stats")!.addEventListener("click", () => renderStats());
+
   app.querySelector("#reset")!.addEventListener("click", () => {
     if (confirm("Reset all progress, XP and mastered questions?")) {
       resetProgress();
@@ -213,6 +218,68 @@ function renderMenu(selected: Set<Category> = new Set()): void {
       toast("Progress reset");
     }
   });
+}
+
+// ===================== Stats / Profile screen =====================
+
+function renderStats(): void {
+  stopTimer();
+  const lvl = levelForXp(progress.xp);
+  const next = nextLevel(progress.xp);
+  const progPct = Math.round(levelProgress(progress.xp) * 100);
+  const acc = overallAccuracy(progress.stats);
+  const byCat = computeAccuracyByCategory(progress.stats);
+
+  const catRows =
+    byCat.length === 0
+      ? `<p class="chip-hint">No answers yet — play a round to build your stats.</p>`
+      : byCat
+          .map((r) => {
+            const meta = CATEGORIES[r.category];
+            return `
+            <div class="cat-stat">
+              <div class="cat-stat-head">
+                <span class="cat-stat-name">${meta.emoji} ${escapeHtml(meta.title)}</span>
+                <span class="cat-stat-num">${r.accuracy}% · ${r.correct}/${r.total}</span>
+              </div>
+              <div class="track"><div class="fill" style="width:${r.accuracy}%"></div></div>
+            </div>`;
+          })
+          .join("");
+
+  app.innerHTML = `
+    <h1 class="title">📊 Your Stats</h1>
+    <p class="subtitle">Lifetime progress, stored only in this browser.</p>
+
+    <div class="card">
+      <div class="result-grid">
+        <div class="result-cell"><div class="big">${progress.stats.totalAnswered}</div><div class="lbl">Answered</div></div>
+        <div class="result-cell"><div class="big">${acc}%</div><div class="lbl">Accuracy</div></div>
+        <div class="result-cell"><div class="big">🔥 ${progress.stats.bestStreak}</div><div class="lbl">Best streak</div></div>
+        <div class="result-cell"><div class="big">${progress.stats.totalCorrect}</div><div class="lbl">Correct</div></div>
+      </div>
+
+      <div class="hud" style="margin-top:6px">
+        <div class="stat"><span class="label">Rank</span><span class="value">${lvl.title}</span></div>
+        <div class="stat"><span class="label">XP</span><span class="value">${progress.xp}</span></div>
+        <div class="level-bar">
+          <span class="label" style="font-size:.7rem;color:var(--muted)">${
+            next ? `to "${next.title}"` : "maximum level"
+          }</span>
+          <div class="track"><div class="fill" style="width:${progPct}%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Accuracy by category</h3>
+      <div class="cat-stats">${catRows}</div>
+    </div>
+
+    <button class="btn ghost" id="back">← Back</button>
+  `;
+
+  app.querySelector("#back")!.addEventListener("click", () => renderMenu());
 }
 
 function startRound(selectedCats: Set<Category>, useTimer: boolean): void {
@@ -391,6 +458,12 @@ function answer(q: Question, selectedIndex: number): void {
   progress.totalAnswered += 1;
   if (correct) progress.totalCorrect += 1;
   progress.bestStreak = Math.max(progress.bestStreak, round.bestStreak);
+  // Lifetime stats (incl. per-category accuracy) via a pure aggregator.
+  progress.stats = updateStats(progress.stats, {
+    category: q.category,
+    correct,
+    streak: round.streak,
+  });
   saveProgress(progress);
 
   // Highlight the options.
